@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>sid2varun:restrict_posts</id>
+	<name>Restrict Posts</name>
+	<version>1.0</version>
+	<type>modification</type>
+
+	<install for="2.0 - 2.0.99">
+		<database>install.php</database>
+		<require-file name="RestrictPosts.php" destination="$sourcedir">Main functional file</require-file>
+		<require-file name="RestrictPosts.template.php" destination="$themedir">template file</require-file>
+		<require-file name="RestrictPosts.english.php" destination="$languagedir">The file</require-file>
+		<!--<modification>modification.xml</modification>-->
+	</install>
+
+	<uninstall for="2.0 - 2.0.99">
+	    <code>uninstall.php</code>
+		<remove-file name="$sourcedir/RestrictPosts.php" />
+		<remove-file name="$themedir/RestrictPosts.template.php" />
+		<remove-file name="$languagedir/RestrictPosts.english.php" />
+		<!--<modification reverse="true">modification.xml</modification>-->
+		<redirect url="$scripturl?action=admin;area=packages;sa=browse" timeout="1000" />
+	</uninstall>
+
+</package-info>
