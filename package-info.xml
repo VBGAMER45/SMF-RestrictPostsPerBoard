@@ -9,6 +9,7 @@
 	<install for="2.0 - 2.0.99">
 		<database>install.php</database>
 		<require-file name="RestrictPosts.php" destination="$sourcedir">Main functional file</require-file>
+		<require-file name="Subs-RestrictPosts.php" destination="$sourcedir">Main functional file</require-file>
 		<require-file name="RestrictPosts.template.php" destination="$themedir">template file</require-file>
 		<require-file name="RestrictPosts.english.php" destination="$languagedir">The file</require-file>
 		<!--<modification>modification.xml</modification>-->
@@ -17,6 +18,7 @@
 	<uninstall for="2.0 - 2.0.99">
 	    <code>uninstall.php</code>
 		<remove-file name="$sourcedir/RestrictPosts.php" />
+		<remove-file name="$sourcedir/Subs-RestrictPosts.php" />
 		<remove-file name="$themedir/RestrictPosts.template.php" />
 		<remove-file name="$languagedir/RestrictPosts.english.php" />
 		<!--<modification reverse="true">modification.xml</modification>-->
