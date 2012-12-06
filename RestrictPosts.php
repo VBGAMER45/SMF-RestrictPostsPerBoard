@@ -164,6 +164,36 @@ function saveRestrictPostsSettings() {
 
 	//echo 'we are in';
 	print_r($_POST);
+	echo '<br />';
+
+	//ok lets work on the crazyyy datazz
+	$data = array();
+	foreach($_POST as $key => $val) {
+		$board_id = preg_replace("/[^0-9]/", '', $key);
+		if(strpos($key, '_groups')) {
+			foreach($val as $key1 => $value) {
+				$data[$board_id] = array(
+					'id_board' => $board_id,
+					'id_group' => $value
+				);
+			}
+		}
+	}
+
+	foreach($_POST as $key => $val) {
+		$board_id = preg_replace("/[^0-9]/", '', $key);
+		if(strpos($key, '_count') && array_key_exists($board_id, $data	)) {
+			$data[$board_id]['max_posts_allowed'] = $value;
+			//echo $key , ' : ', $board_id ,' this is a count ', $val;
+			//echo '<br />';
+			//echo '<br />';
+		}
+	}
+
+	//print_r($data);
+	foreach($data as $key => $val) {
+		echo $val['id_board'] . ' : ' . $val['id_group'] . ' : ' . $val['max_posts_allowed'];
+	}
 	die();
 }
 

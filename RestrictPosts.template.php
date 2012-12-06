@@ -68,9 +68,9 @@ echo '
 
 			echo '
 			<div style="width: 25%; float: left">
-				<input' . ($group_exist ? ' checked="checked"' : '') . ' id="' . $group['id_group'] . '" type="checkbox" name="' . $board_info['id_board'] . '_groups[]" value="' . $group['id_group'] . '" /> <label for="' . $group['id_group'] . '">' . $group['group_name'] . '</label>
-				</div>
-				<input type="text" name="' . $board_info['id_board'] . '_count[]" id="" value="', $post_count ,'" class="input_text"><br />';
+				<input' . ($group_exist ? ' checked="checked"' : '') . ' id="' . $group['id_group'] . '" type="checkbox" name="' . $board_info['id_board'] . '_groups['.$group['id_group'].']" value="" /> <label for="' . $group['id_group'] . '">' . $group['group_name'] . '</label>
+			</div>
+			<input type="text" name="' . $board_info['id_board'] . '_count['.$group['id_group'].']" id="" value="', $post_count ,'" class="input_text"><br />';
 		}
 
 		echo ' </fieldset>';
