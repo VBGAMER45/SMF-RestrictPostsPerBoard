@@ -60,9 +60,8 @@ function ModifyRestrictPostsSettings($return_config = false)
 	loadLanguage('RestrictPosts');
 	loadtemplate('RestrictPosts');
 
-	
-
 	$context['page_title'] = $txt['RP_admin_panel'];
+	$default_action_func = 'basicRestrictPostsSettings';
 
 	// Load up the guns
 	$context[$context['admin_menu_name']]['tab_data'] = array(
@@ -78,7 +77,6 @@ function ModifyRestrictPostsSettings($return_config = false)
 		'savesettings' => 'saveRestrictPostsSettings'
 	);
 
-	$default_action_func = 'basicRestrictPostsSettings';
 	//wakey wakey, call the func you lazy
 	foreach ($subActions as $key => $action)
 	{
@@ -135,16 +133,6 @@ function basicRestrictPostsSettings($return_config = false)
 			}
 		}
 	}
-
-
-	//print_r($context['restrict_posts']['status']);
-	//echo '<br />';
-	//print_r($context['restrict_posts']['board_info']);
-	/*foreach($context['restrict_posts']['board_info'] as $board_key => $boards) {
-		print_r($context['restrict_posts']['board_info'][$board_key]);
-			echo '<br />';
-	}
-	die();*/
 
 	$context['page_title'] = $txt['RP_admin_panel'];
 	$context['sub_template'] = 'rp_admin_panel';
