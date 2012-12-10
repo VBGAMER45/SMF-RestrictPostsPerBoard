@@ -56,19 +56,9 @@ echo '
 				echo '
 				<legend class="global_perm_heading" id="'. $board_info['id_board']. '">' . $board_info['board_name'] . '</legend>';
 
-				foreach ($context['restrict_posts']['groups'] as $group)
+				foreach ($board_info['groups_data'] as $key => $group)
 				{
-					$group_exist = false;
-					$post_count = 0;
-					$timespan = 0;
-					if(!empty($board_info['groups_restricted']) && in_array($group['id_group'], $board_info['groups_restricted'])) {
-						$group_exist = true;
-						$post_count = $board_info['max_posts_allowed'][0];
-						$timespan = $board_info['timespan'][0];
-						array_shift($board_info['max_posts_allowed']);
-						array_shift($board_info['timespan']);
-					}
-		
+					//print_r($group);
 					echo '
 						<div style="width: 25%; float: left">';
 					echo '
@@ -76,9 +66,9 @@ echo '
 		
 					echo '
 					</div>
-					<input type="text" name="' . $board_info['id_board'] . '_posts_'.$group['id_group'].'" id="" value="', $post_count ,'" class="input_text">';
+					<input type="text" name="' . $board_info['id_board'] . '_posts_'.$group['id_group'].'" id="" value="', $group['max_posts_allowed'] ,'" class="input_text">';
 					echo '
-					<input type="text" name="' . $board_info['id_board'] . '_timespan_'.$group['id_group'].'" id="" value="', $timespan ,'" class="input_text"><br />';
+					<input type="text" name="' . $board_info['id_board'] . '_timespan_'.$group['id_group'].'" id="" value="', $group['timespan'] ,'" class="input_text"><br />';
 				}
 		
 				echo '

@@ -119,19 +119,26 @@ function basicRestrictPostsSettings($return_config = false)
 	$context['restrict_posts']['board_info'] = RP_load_all_boards();
 	$context['restrict_posts']['status'] = RP_load_post_restrict_status();
 
+
 	foreach($context['restrict_posts']['board_info'] as $board_key => $boards) {
-		$context['restrict_posts']['board_info'][$board_key]['groups_restricted'] = '';
-		foreach($context['restrict_posts']['status'] as $status_key => $status) {
-			if($status['id_board'] === $boards['id_board']) {
-				$context['restrict_posts']['board_info'][$board_key]['groups_restricted'][] = $status['id_group'];
-				$context['restrict_posts']['board_info'][$board_key]['max_posts_allowed'][] = $status['max_posts_allowed'];
-				$context['restrict_posts']['board_info'][$board_key]['timespan'][] = $status['timespan'];
-			} else {
-				$context['restrict_posts']['board_info'][$board_key]['groups_restricted'] = '';
-				$context['restrict_posts']['board_info'][$board_key]['max_posts_allowed'] = $status['max_posts_allowed'];
-				$context['restrict_posts']['board_info'][$board_key]['timespan'] = $status['timespan'];
+		foreach($context['restrict_posts']['groups'] as $groups_key => $groups) {
+			if(in_array($groups['id_group'], $boards['member_groups'])) {
+				$context['restrict_posts']['board_info'][$board_key]['groups_data'][$boards['id_board'] . '_' .$groups['id_group']] = array(
+					'id_group' => $groups['id_group'],
+					'group_name' => $groups['group_name'],
+					'max_posts_allowed' => '',
+					'timespan' => ''
+				);
 			}
 		}
+
+		foreach($context['restrict_posts']['status'] as $status_key => $status) {
+			if($status['id_board'] === $boards['id_board'] && isset($context['restrict_posts']['board_info'][$board_key]['groups_data']) && isset($context['restrict_posts']['board_info'][$board_key]['groups_data'][$boards['id_board'] . '_' . $status['id_group']])) {
+					$context['restrict_posts']['board_info'][$board_key]['groups_data'][$boards['id_board'] . '_' .$status['id_group']]['max_posts_allowed'] = $status['max_posts_allowed'];
+					$context['restrict_posts']['board_info'][$board_key]['groups_data'][$boards['id_board'] . '_' .$status['id_group']]['timespan'] = $status['timespan'];
+			}
+		}
+		unset($context['restrict_posts']['board_info'][$board_key]['member_groups']);
 	}
 
 	$context['page_title'] = $txt['RP_admin_panel'];
