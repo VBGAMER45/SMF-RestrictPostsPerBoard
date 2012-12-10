@@ -162,10 +162,64 @@ function saveRestrictPostsSettings() {
 	/* I can has Adminz? */
 	isAllowedTo('admin_forum');
 
-	//echo 'we are in';
-	print_r($_POST);
-	
+	//Now we have posts data in a much proper manner
+	$data = array();
+	unset($_POST['submit']);
+	foreach($_POST as $key => $value) {
+		
+		//just boom the data, let them get happy
+		$temp_data = explode('_', $key);
+
+		//if i found something fishy, you are going back
+		if(!is_numeric($temp_data[0]) || !is_numeric($temp_data[2])) {
+			return false;
+		}
+
+		$id_board = (int) $temp_data[0];
+		$id_group = (int) $temp_data[2];
+
+		if ($temp_data[1] === 'posts') {
+			if(isset($data[$id_board . '_' . $id_group])) {
+				$data[$id_board . '_' . $id_group]['max_posts_allowed'] = (int) $value;
+			} else {
+				$data[$id_board . '_' . $id_group] = array(
+					'id_board' => $id_board,
+					'id_group' => $id_board,
+					'max_posts_allowed' => (int) $value,
+				);
+			}
+		} else if ($temp_data[1] === 'timespan') {
+			if(isset($data[$id_board . '_' . $id_group])) {
+				$data[$id_board . '_' . $id_group]['timespan'] = (int) $value;
+			} else {
+				$data[$id_board . '_' . $id_group] = array(
+					'id_board' => $id_board,
+					'id_group' => $id_board,
+					'timespan' => (int) $value,
+				);
+			}
+		}
+	}
+
+	//Lets clear the junk values
+	$context['restrict_posts_db_data'] = clearDBData($data);
+	print_r($context['restrict_posts_db_data']);
 	die();
+}
+
+function clearDBData ($data = array()) {
+	global $context;
+	
+	if(!is_array($data)) {
+		$data = array($data);
+	}
+
+	foreach($data as $key => $val) {
+		if(empty($val['max_posts_allowed']) || empty($val['timespan'])) {
+			unset($data[$key]);
+		}
+	}
+	return $data;
 }
 
 ?>
