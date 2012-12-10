@@ -60,17 +60,22 @@ echo '
 		{
 			$group_exist = false;
 			$post_count = 0;
+			$timespan = 0;
 			if(!empty($board_info['groups_restricted']) && in_array($group['id_group'], $board_info['groups_restricted'])) {
 				$group_exist = true;
 				$post_count = $board_info['max_posts_allowed'][0];
+				$timespan = $board_info['timespan'][0];
 				array_shift($board_info['max_posts_allowed']);
+				array_shift($board_info['timespan']);
 			}
 
 			echo '
-			<div style="width: 25%; float: left">
-				<input' . ($group_exist ? ' checked="checked"' : '') . ' id="' . $group['id_group'] . '" type="checkbox" name="' . $board_info['id_board'] . '_groups['.$group['id_group'].']" value="" /> <label for="' . $group['id_group'] . '">' . $group['group_name'] . '</label>
+			<div style="width: 25%; float: left">';
+				//echo '<input' . ($group_exist ? ' checked="checked"' : '') . ' id="' . $group['id_group'] . '" type="checkbox" name="' . $board_info['id_board'] . '_groups['.$group['id_group'].']" value="" />';
+				echo '<label for="' . $group['id_group'] . '">' . $group['group_name'] . '</label>
 			</div>
-			<input type="text" name="' . $board_info['id_board'] . '_count['.$group['id_group'].']" id="" value="', $post_count ,'" class="input_text"><br />';
+			<input type="text" name="' . $board_info['id_board'] . '_posts_'.$group['id_group'].'" id="" value="', $post_count ,'" class="input_text">';
+			echo '<input type="text" name="' . $board_info['id_board'] . '_timespan_'.$group['id_group'].'" id="" value="', $timespan ,'" class="input_text"><br />';
 		}
 
 		echo ' </fieldset>';

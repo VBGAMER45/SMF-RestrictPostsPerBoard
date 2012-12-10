@@ -38,7 +38,7 @@ function RP_load_all_boards()
 	global $smcFunc;
 	
 	$request = $smcFunc['db_query']('', '
-		SELECT id_board, name
+		SELECT id_board, name, member_groups
 		FROM {db_prefix}boards',
 		array()
 	);
@@ -49,7 +49,8 @@ function RP_load_all_boards()
 	while ($row = $smcFunc['db_fetch_assoc']($request)) {
 		$boards_info[$row['id_board']] = array(
 			'id_board' => $row['id_board'],
-			'board_name' => $row['name']
+			'board_name' => $row['name'],
+			'member_groups' => !empty($row['member_groups']) ? explode(',', $row['member_groups']) : '',
 		);
 	}
 	$smcFunc['db_free_result']($request);

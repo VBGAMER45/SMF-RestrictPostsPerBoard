@@ -122,33 +122,50 @@ function basicRestrictPostsSettings($return_config = false)
 	$context['restrict_posts']['status'] = RP_load_post_restrict_status();
 
 	
-	
+
+	//lets checkout member groups first
 	foreach($context['restrict_posts']['board_info'] as $board_key => $boards) {
-		$context['restrict_posts']['board_info'][$board_key]['groups_restricted'] = '';
-		foreach($context['restrict_posts']['status'] as $status_key => $status) {
-			if($status['id_board'] === $boards['id_board']) {
-				$context['restrict_posts']['board_info'][$board_key]['groups_restricted'][] = $status['id_group'];
-				$context['restrict_posts']['board_info'][$board_key]['max_posts_allowed'][] = $status['max_posts_allowed'];
-				$context['restrict_posts']['board_info'][$board_key]['timespan'][] = $status['timespan'];
-				$context['restrict_posts']['board_info'][$board_key]['is_collapsed'] = $status['is_collapsed'];
-			} else {
-				$context['restrict_posts']['board_info'][$board_key]['groups_restricted'] = '';
-				$context['restrict_posts']['board_info'][$board_key]['max_posts_allowed'] = $status['max_posts_allowed'];
-				$context['restrict_posts']['board_info'][$board_key]['timespan'] = $status['timespan'];
-				$context['restrict_posts']['board_info'][$board_key]['is_collapsed'] = $status['is_collapsed'];
+		foreach($context['restrict_posts']['groups'] as $groups_key => $groups) {
+			if(in_array($groups['id_group'], $boards['member_groups'])) {
+				$context['restrict_posts']['board_info'][$board_key]['groups_data'][] = array(
+					'id_group' => $groups['id_group'],
+					'name' => $groups['group_name']
+				);
 			}
 		}
+		foreach($context['restrict_posts']['status'] as $status_key => $status) {
+			if($status['id_board'] === $boards['id_board'] && in_array($status['id_group'], $context['restrict_posts']['board_info'][$board_key]['groups_data'])) {
+				echo $status['id_group'];
+				$group_key = array_search($status['id_group'], $context['restrict_posts']['board_info'][$board_key]['groups_data']);
+				echo $group_key;
+				echo '<br />';
+				//$context['restrict_posts']['board_info'][$board_key]['groups_data'];
+			}
+		}
+		unset($context['restrict_posts']['board_info'][$board_key]['member_groups']);
 	}
 
-
+	print_r($context['restrict_posts']['board_info']);
 	//print_r($context['restrict_posts']['status']);
 	//echo '<br />';
 	//print_r($context['restrict_posts']['board_info']);
 	/*foreach($context['restrict_posts']['board_info'] as $board_key => $boards) {
 		print_r($context['restrict_posts']['board_info'][$board_key]);
 			echo '<br />';
-	}
-	die();*/
+	}*/
+	die();
+	
+				/*if($status['id_board'] === $boards['id_board']) {
+				$context['restrict_posts']['board_info'][$board_key]['groups_data'][] = $status['id_group'];
+				$context['restrict_posts']['board_info'][$board_key]['max_posts_allowed'][] = $status['max_posts_allowed'];
+				$context['restrict_posts']['board_info'][$board_key]['timespan'] = $status['timespan'];
+				$context['restrict_posts']['board_info'][$board_key]['is_collapsed'] = $status['is_collapsed'];
+			} else {
+				$context['restrict_posts']['board_info'][$board_key]['groups_restricted'] = '';
+				$context['restrict_posts']['board_info'][$board_key]['max_posts_allowed'] = $status['max_posts_allowed'];
+				$context['restrict_posts']['board_info'][$board_key]['timespan'] = $status['timespan'];
+				$context['restrict_posts']['board_info'][$board_key]['is_collapsed'] = $status['is_collapsed'];
+			}*/
 
 	$context['page_title'] = $txt['RP_admin_panel'];
 	$context['sub_template'] = 'rp_admin_panel';
@@ -164,7 +181,36 @@ function saveRestrictPostsSettings() {
 
 	//echo 'we are in';
 	print_r($_POST);
-	
+	echo '<br />';
+
+	//ok lets work on the crazyyy datazz
+	$data = array();
+	foreach($_POST as $key => $val) {
+		$board_id = preg_replace("/[^0-9]/", '', $key);
+		if(strpos($key, '_groups')) {
+			foreach($val as $key1 => $value) {
+				$data[$board_id] = array(
+					'id_board' => $board_id,
+					'id_group' => $value
+				);
+			}
+		}
+	}
+
+	foreach($_POST as $key => $val) {
+		$board_id = preg_replace("/[^0-9]/", '', $key);
+		if(strpos($key, '_count') && array_key_exists($board_id, $data	)) {
+			$data[$board_id]['max_posts_allowed'] = $value;
+			//echo $key , ' : ', $board_id ,' this is a count ', $val;
+			//echo '<br />';
+			//echo '<br />';
+		}
+	}
+
+	//print_r($data);
+	foreach($data as $key => $val) {
+		echo $val['id_board'] . ' : ' . $val['id_group'] . ' : ' . $val['max_posts_allowed'];
+	}
 	die();
 }
 
