@@ -121,8 +121,6 @@ function basicRestrictPostsSettings($return_config = false)
 	$context['restrict_posts']['board_info'] = RP_load_all_boards();
 	$context['restrict_posts']['status'] = RP_load_post_restrict_status();
 
-	
-	
 	foreach($context['restrict_posts']['board_info'] as $board_key => $boards) {
 		$context['restrict_posts']['board_info'][$board_key]['groups_restricted'] = '';
 		foreach($context['restrict_posts']['status'] as $status_key => $status) {
@@ -130,12 +128,10 @@ function basicRestrictPostsSettings($return_config = false)
 				$context['restrict_posts']['board_info'][$board_key]['groups_restricted'][] = $status['id_group'];
 				$context['restrict_posts']['board_info'][$board_key]['max_posts_allowed'][] = $status['max_posts_allowed'];
 				$context['restrict_posts']['board_info'][$board_key]['timespan'][] = $status['timespan'];
-				$context['restrict_posts']['board_info'][$board_key]['is_collapsed'] = $status['is_collapsed'];
 			} else {
 				$context['restrict_posts']['board_info'][$board_key]['groups_restricted'] = '';
 				$context['restrict_posts']['board_info'][$board_key]['max_posts_allowed'] = $status['max_posts_allowed'];
 				$context['restrict_posts']['board_info'][$board_key]['timespan'] = $status['timespan'];
-				$context['restrict_posts']['board_info'][$board_key]['is_collapsed'] = $status['is_collapsed'];
 			}
 		}
 	}
@@ -184,7 +180,7 @@ function saveRestrictPostsSettings() {
 			} else {
 				$data[$id_board . '_' . $id_group] = array(
 					'id_board' => $id_board,
-					'id_group' => $id_board,
+					'id_group' => $id_group,
 					'max_posts_allowed' => (int) $value,
 				);
 			}
@@ -194,7 +190,7 @@ function saveRestrictPostsSettings() {
 			} else {
 				$data[$id_board . '_' . $id_group] = array(
 					'id_board' => $id_board,
-					'id_group' => $id_board,
+					'id_group' => $id_group,
 					'timespan' => (int) $value,
 				);
 			}
@@ -202,12 +198,17 @@ function saveRestrictPostsSettings() {
 	}
 
 	//Lets clear the junk values
-	$context['restrict_posts_db_data'] = clearDBData($data);
-	print_r($context['restrict_posts_db_data']);
-	die();
+	$context['restrict_posts_db_data'] = sanitizeRestrictDBData($data);
+
+	if(empty($context['restrict_posts_db_data'])) {
+		redirectexit('action=admin;area=restrictposts;sa=basic');
+	} else {
+		RP_add_restrict_data($context['restrict_posts_db_data']);
+		redirectexit('action=admin;area=restrictposts;sa=basic');
+	}
 }
 
-function clearDBData ($data = array()) {
+function sanitizeRestrictDBData ($data = array()) {
 	global $context;
 	
 	if(!is_array($data)) {

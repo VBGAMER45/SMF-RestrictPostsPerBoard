@@ -89,7 +89,7 @@ function RP_load_post_restrict_status()
 	global $smcFunc;
 
 	$request = $smcFunc['db_query']('', '
-		SELECT id_board, id_group, max_posts_allowed, timespan, is_collapsed
+		SELECT id_board, id_group, max_posts_allowed, timespan
 		FROM {db_prefix}restrict_posts',
 		array()
 	);
@@ -101,12 +101,45 @@ function RP_load_post_restrict_status()
 			'id_group' => $row['id_group'],
 			'max_posts_allowed' => $row['max_posts_allowed'],
 			'timespan' => $row['timespan'],
-			'is_collapsed' => $row['is_collapsed']
 		);
 	}
 	$smcFunc['db_free_result']($request);
 
 	return $post_restrict_status;
+}
+
+function RP_add_restrict_data($data = array()) {
+	global $smcFunc;
+
+	//not possible, if it still happens, go back
+	if(!is_array($data)) {
+		return;
+	}
+
+	//Just empty the data and add new data
+	RP_clear_restrict_data();
+
+	foreach($data as $val) {
+		$smcFunc['db_insert']('',
+			'{db_prefix}restrict_posts',
+			array(
+				'id_board' => 'int', 'id_group' => 'int', 'max_posts_allowed' => 'int', 'timespan' => 'int',
+			),
+			array(
+				$val['id_board'], $val['id_group'], $val['max_posts_allowed'], $val['timespan'],
+			),
+			array()
+		);
+	}
+}
+
+function RP_clear_restrict_data() {
+	global $smcFunc;
+
+	$smcFunc['db_query']('', '
+		DELETE FROM {db_prefix}restrict_posts',
+		array()
+	);
 }
 
 ?>

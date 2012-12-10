@@ -74,12 +74,6 @@ $table = array(
 			'null' => false,
 			'default' => '1',
 		),
-		array(
-			'name' => 'is_collapsed',
-			'type' => 'smallint',
-			'size' => 1,
-			'default' => '1',
-		),
 	),
 	'indexes' => array(),
 );
