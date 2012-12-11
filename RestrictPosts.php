@@ -219,15 +219,16 @@ function sanitizeRestrictDBData ($data = array()) {
 }
 
 function isAllowedToPost() {
-	global $context, $user_info;
+	global $context, $user_info, $sourcedir;
 
+	require_once($sourcedir . '/Subs-RestrictPosts.php');
 	if(!isset($context['current_board'])) {
 		return false;
 	}
 
-	if($user_info['is_admin']) {
+	/*if($user_info['is_admin']) {
 		return true;
-	}
+	}*/
 
 	$rp_is_allowed = RP_isAllowedToPost();
 	return $rp_is_allowed;

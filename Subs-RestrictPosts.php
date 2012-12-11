@@ -146,7 +146,7 @@ function RP_isAllowedToPost() {
 	global $smcFunc, $context, $user_info;
 
 	$request = $smcFunc['db_query']('', '
-		SELECT id_board, id_group, max_posts_allowed, timespan
+		SELECT MIN(max_posts_allowed) as max_posts_allowed, MIN(timespan) as timespan
 		FROM {db_prefix}restrict_posts
 		WHERE id_board = {int:id_board}
 		AND id_group IN ({array_int:id_group})',
@@ -159,32 +159,33 @@ function RP_isAllowedToPost() {
 	if ($smcFunc['db_num_rows']($request) == 0) {
 		return true;
 	}
-
-	$post_restrict_status = array();
-	while ($row = $smcFunc['db_fetch_assoc']($request)) {
-		$post_restrict_status[] = array(
-			'id_board' => $row['id_board'],
-			'id_group' => $row['id_group'],
-			'max_posts_allowed' => $row['max_posts_allowed'],
-			'timespan' => $row['timespan'],
-		);
-	}
+	//another cool method strtotime("-5 day");
+	//time() - 86400 * $row['timespan'];
+	list ($max_posts_allowed, $timespan) = $smcFunc['db_fetch_row']($request);
 	$smcFunc['db_free_result']($request);
 
+	$timespan = time() - 86400 * $timespan;
+
 	$request = $smcFunc['db_query']('', '
-		SELECT id_msg
-		FROM {db_prefix}messages
-		WHERE poster_time > {int:id_board}
-		AND id_group IN ({array_int:id_group})',
+		SELECT COUNT(m.id_msg)
+		FROM {db_prefix}messages as m
+		INNER JOIN {db_prefix}members as mem on (mem.id_member = m.id_member)
+		WHERE m.poster_time > {int:poster_time}
+		AND mem.id_group IN ({array_int:id_group})',
 		array(
-			'id_board' => $context['current_board'],
+			'poster_time' => $timespan,
 			'id_group' => $user_info['groups']
 		)
 	);
-	echo time() - 86400 * 5;
-	echo '<br />';
-	echo strtotime("-5 day");
+	list ($count) = $smcFunc['db_fetch_row']($request);
+	$smcFunc['db_free_result']($request);
 
+	//echo 'before count';
+	if(!empty($count) && $count >= $max_posts_allowed) {
+		return false;
+	} else {
+		return true;
+	}
 }
 
 ?>
