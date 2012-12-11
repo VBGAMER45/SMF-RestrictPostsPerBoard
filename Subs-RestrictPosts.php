@@ -50,7 +50,7 @@ function RP_load_all_boards()
 		$boards_info[$row['id_board']] = array(
 			'id_board' => $row['id_board'],
 			'board_name' => $row['name'],
-			'member_groups' => !empty($row['member_groups']) ? explode(',', $row['member_groups']) : '',
+			'member_groups' => !empty($row['member_groups']) ? explode(',', $row['member_groups']) : array(),
 		);
 	}
 	$smcFunc['db_free_result']($request);

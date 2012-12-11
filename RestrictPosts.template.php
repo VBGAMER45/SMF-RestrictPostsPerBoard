@@ -56,19 +56,25 @@ echo '
 				echo '
 				<legend class="global_perm_heading" id="'. $board_info['id_board']. '">' . $board_info['board_name'] . '</legend>';
 
-				foreach ($board_info['groups_data'] as $key => $group)
-				{
-					//print_r($group);
-					echo '
-						<div style="width: 25%; float: left">';
-					echo '
-						<label for="' . $group['id_group'] . '">' . $group['group_name'] . '</label>';
-		
-					echo '
-					</div>
-					<input type="text" name="' . $board_info['id_board'] . '_posts_'.$group['id_group'].'" id="" value="', $group['max_posts_allowed'] ,'" class="input_text" placeholder="'. $txt['rp_max_posts'] .'" />';
-					echo '
-					<input type="text" name="' . $board_info['id_board'] . '_timespan_'.$group['id_group'].'" id="" value="', $group['timespan'] ,'" class="input_text" placeholder="'. $txt['rp_time_limit'] .'" /><br />';
+				if(empty($board_info['groups_data'])) {
+					echo $txt['rp_no_groups_found'];
+				}
+
+				else {
+					foreach ($board_info['groups_data'] as $key => $group)
+					{
+						//print_r($group);
+						echo '
+							<div style="width: 25%; float: left">';
+						echo '
+							<label for="' . $group['id_group'] . '">' . $group['group_name'] . '</label>';
+			
+						echo '
+						</div>
+						<input type="text" name="' . $board_info['id_board'] . '_posts_'.$group['id_group'].'" id="" value="', $group['max_posts_allowed'] ,'" class="input_text" placeholder="'. $txt['rp_max_posts'] .'" />';
+						echo '
+						<input type="text" name="' . $board_info['id_board'] . '_timespan_'.$group['id_group'].'" id="" value="', $group['timespan'] ,'" class="input_text" placeholder="'. $txt['rp_time_limit'] .'" /><br />';
+					}
 				}
 		
 				echo '

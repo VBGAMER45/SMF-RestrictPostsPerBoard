@@ -41,5 +41,7 @@ $txt['rp_basic_tab'] = 'Basic';
 $txt['rp_basic_tab_desc'] = 'From here you can allow the number of posts a group can make on a board in a give time span.';
 $txt['rp_max_posts'] = 'Max posts';
 $txt['rp_time_limit'] = 'Time Limit';
+$txt['rp_limit_reached'] = 'Oops, it looks like you have reached your posting limit.';
+$txt['rp_no_groups_found'] = 'Please add some groups in the board.';
 
 ?>
