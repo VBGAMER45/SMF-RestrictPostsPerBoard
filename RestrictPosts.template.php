@@ -66,9 +66,9 @@ echo '
 		
 					echo '
 					</div>
-					<input type="text" name="' . $board_info['id_board'] . '_posts_'.$group['id_group'].'" id="" value="', $group['max_posts_allowed'] ,'" class="input_text">';
+					<input type="text" name="' . $board_info['id_board'] . '_posts_'.$group['id_group'].'" id="" value="', $group['max_posts_allowed'] ,'" class="input_text" placeholder="'. $txt['rp_max_posts'] .'" />';
 					echo '
-					<input type="text" name="' . $board_info['id_board'] . '_timespan_'.$group['id_group'].'" id="" value="', $group['timespan'] ,'" class="input_text"><br />';
+					<input type="text" name="' . $board_info['id_board'] . '_timespan_'.$group['id_group'].'" id="" value="', $group['timespan'] ,'" class="input_text" placeholder="'. $txt['rp_time_limit'] .'" /><br />';
 				}
 		
 				echo '
