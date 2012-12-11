@@ -218,4 +218,19 @@ function sanitizeRestrictDBData ($data = array()) {
 	return $data;
 }
 
+function isAllowedToPost() {
+	global $context, $user_info;
+
+	if(!isset($context['current_board'])) {
+		return false;
+	}
+
+	if($user_info['is_admin']) {
+		return true;
+	}
+
+	$rp_is_allowed = RP_isAllowedToPost();
+	return $rp_is_allowed;
+}
+
 ?>

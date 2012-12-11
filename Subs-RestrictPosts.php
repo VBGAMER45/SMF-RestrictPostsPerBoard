@@ -142,4 +142,49 @@ function RP_clear_restrict_data() {
 	);
 }
 
+function RP_isAllowedToPost() {
+	global $smcFunc, $context, $user_info;
+
+	$request = $smcFunc['db_query']('', '
+		SELECT id_board, id_group, max_posts_allowed, timespan
+		FROM {db_prefix}restrict_posts
+		WHERE id_board = {int:id_board}
+		AND id_group IN ({array_int:id_group})',
+		array(
+			'id_board' => $context['current_board'],
+			'id_group' => $user_info['groups']
+		)
+	);
+
+	if ($smcFunc['db_num_rows']($request) == 0) {
+		return true;
+	}
+
+	$post_restrict_status = array();
+	while ($row = $smcFunc['db_fetch_assoc']($request)) {
+		$post_restrict_status[] = array(
+			'id_board' => $row['id_board'],
+			'id_group' => $row['id_group'],
+			'max_posts_allowed' => $row['max_posts_allowed'],
+			'timespan' => $row['timespan'],
+		);
+	}
+	$smcFunc['db_free_result']($request);
+
+	$request = $smcFunc['db_query']('', '
+		SELECT id_msg
+		FROM {db_prefix}messages
+		WHERE poster_time > {int:id_board}
+		AND id_group IN ({array_int:id_group})',
+		array(
+			'id_board' => $context['current_board'],
+			'id_group' => $user_info['groups']
+		)
+	);
+	echo time() - 86400 * 5;
+	echo '<br />';
+	echo strtotime("-5 day");
+
+}
+
 ?>
