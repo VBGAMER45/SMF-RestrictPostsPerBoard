@@ -12,7 +12,7 @@
 		<require-file name="Subs-RestrictPosts.php" destination="$sourcedir">Main functional file</require-file>
 		<require-file name="RestrictPosts.template.php" destination="$themedir">template file</require-file>
 		<require-file name="RestrictPosts.english.php" destination="$languagedir">The file</require-file>
-		<!--<modification>modification.xml</modification>-->
+		<modification>Modification.xml</modification>
 	</install>
 
 	<uninstall for="2.0 - 2.0.99">
@@ -21,7 +21,7 @@
 		<remove-file name="$sourcedir/Subs-RestrictPosts.php" />
 		<remove-file name="$themedir/RestrictPosts.template.php" />
 		<remove-file name="$languagedir/RestrictPosts.english.php" />
-		<!--<modification reverse="true">modification.xml</modification>-->
+		<modification reverse="true">Modification.xml</modification>
 		<redirect url="$scripturl?action=admin;area=packages;sa=browse" timeout="1000" />
 	</uninstall>
 
