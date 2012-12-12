@@ -36,7 +36,7 @@
 	<id>sid2varun:restrict_posts</id>
 	<version>1.0</version>
 
-	<file name="$sourcedir/ManageMembergroups.php">
+	<file name="$sourcedir/Post.php">
 		<operation>
 			<search position="after"><![CDATA[// You can't reply with a poll... hacker.]]></search>
 			<add><![CDATA[	if(!isAllowedToPost()) {
