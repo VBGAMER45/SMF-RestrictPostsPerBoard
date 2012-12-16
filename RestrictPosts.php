@@ -234,4 +234,17 @@ function isAllowedToPost() {
 	return $rp_is_allowed;
 }
 
+function isAllowedToPostEvents() {
+	global $context, $user_info, $sourcedir;
+
+	require_once($sourcedir . '/Subs-RestrictPosts.php');
+
+	if($user_info['is_admin']) {
+		return true;
+	}
+
+	$rp_is_allowed = RP_isAllowedToPostEvents();
+	return $rp_is_allowed;
+}
+
 ?>
