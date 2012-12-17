@@ -39,12 +39,20 @@
 	<file name="$sourcedir/Post.php">
 		<operation>
 			<search position="after"><![CDATA[// You can't reply with a poll... hacker.]]></search>
-			<add><![CDATA[	if(!isAllowedToPost()) {
+			<add><![CDATA[	if(!isAllowedToPost() && !isset($_REQUEST['calendar'])) {
 		loadLanguage('RestrictPosts');
 		fatal_lang_error('rp_limit_reached', false);
 	}
+	]]></add>
+		</operation>
 
-]]></add>
+		<operation>
+			<search position="before"><![CDATA[$boards = boardsAllowedTo('post_new');
+			]]></search>
+			<add><![CDATA[$boards_to_exclude = isAllowedToPostEvents();
+			
+			$boards = array_merge(array_diff($boards, $boards_to_exclude), array_diff($boards_to_exclude, $boards));
+			]]></add>
 		</operation>
 	</file>
 </modification>
