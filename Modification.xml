@@ -39,10 +39,11 @@
 	<file name="$sourcedir/Post.php">
 		<operation>
 			<search position="after"><![CDATA[// You can't reply with a poll... hacker.]]></search>
-			<add><![CDATA[	if(!isAllowedToPost() && !isset($_REQUEST['calendar'])) {
+			<add><![CDATA[if(!isAllowedToPost() && !isset($_REQUEST['calendar']) && empty($topic)) {
 		loadLanguage('RestrictPosts');
 		fatal_lang_error('rp_limit_reached', false);
 	}
+
 	]]></add>
 		</operation>
 
