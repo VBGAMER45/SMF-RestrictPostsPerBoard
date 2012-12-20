@@ -226,9 +226,9 @@ function isAllowedToPost() {
 		return false;
 	}
 
-	/*if($user_info['is_admin']) {
+	if($user_info['is_admin']) {
 		return true;
-	}*/
+	}
 
 	$rp_is_allowed = RP_isAllowedToPost();
 	return $rp_is_allowed;
