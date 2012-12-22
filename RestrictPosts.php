@@ -234,8 +234,8 @@ function generalRestrictPostsSettings() {
 
 	require_once($sourcedir . '/ManageServer.php');
 	$general_settings = array(
-		array('check', 'rp_mod_enable'),
-		array('check', 'rp_mod_enable_calendar'),
+		array('check', 'rp_mod_enable', 'subtext' => $txt['rp_enable_disable_mod']),
+		array('check', 'rp_mod_enable_calendar', 'subtext' => $txt['rp_enable_disable_calendar']),
 	);
 
 	$context['page_title'] = $txt['rp_admin_panel'];

@@ -50,6 +50,8 @@ $txt['rp_no_groups_found'] = 'Please add some groups in the board.';
 // Strings for generic settings
 $txt['rp_mod_enable'] = 'Enable restrict posts mod';
 $txt['rp_mod_enable_calendar'] = 'Enable  restrict posts mod settings on calendar';
+$txt['rp_enable_disable_mod'] = 'Global permission to enable/disable mod';
+$txt['rp_enable_disable_calendar'] = 'Permission, whether to use the mod settings while making calendar event or not';
 
 $txt['rp_submit'] = 'Submit';
 

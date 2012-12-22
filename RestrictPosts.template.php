@@ -143,7 +143,12 @@ function template_rp_admin_general_setting_panel()
 						echo '
 						<dl class="settings">
 							<dt>
-								<span>'. $txt[$config_var['name']] .'</span>
+								<span>'. $txt[$config_var['name']] .'</span>';
+								if(isset($config_var['subtext']) && !empty($config_var['subtext'])) {
+									echo '
+									<br /><span class="smalltext">', $config_var['subtext'] ,'</span>';
+								}
+							echo '
 							</dt>
 							<dd>
 								<input type="checkbox" name="', $config_var['name'], '" id="', $config_var['name'], '"', ($config_var['value'] ? ' checked="checked"' : ''), ' value="1" class="input_check" />
