@@ -2,6 +2,10 @@ This modification helps administrator to restrict each member group on per board
 
 By default mod is disable and doesn't interfere with the current forum settings.
 
+All mod settings are available under
+Admin center -> Configuration -> Restrict Posts Per Board
+
+
 To enable the mod go to following mentioned link and enable the mod
 ?action=admin;area=restrictposts;sa=generalsettings
 
@@ -20,3 +24,7 @@ For e.g. if you want the a group can make 50 posts in 2 days enter as following
 - Time span -> 2
 
 Note - If any of the 2 coloumns is left blank, the mod neglects the value of other column, i.e if you have entered value for 'Max posts' only but 'Time span' hasn't been filled. In that case mod neglects both values.
+
+license http://www.mozilla.org/MPL/MPL-1.1.html
+
+GitHub Link - https://github.com/Joker-SMF/SMF-RestrictPostsPerBoard
