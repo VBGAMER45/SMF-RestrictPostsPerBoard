@@ -25,6 +25,10 @@ For e.g. if you want the a group can make 50 posts in 2 days enter as following
 
 Note - If any of the 2 coloumns is left blank, the mod neglects the value of other column, i.e if you have entered value for 'Max posts' only but 'Time span' hasn't been filled. In that case mod neglects both values.
 
-license http://www.mozilla.org/MPL/MPL-1.1.html
-
 GitHub Link - https://github.com/Joker-SMF/SMF-RestrictPostsPerBoard
+
+License
+ * This SMF Modification is subject to the Mozilla Public License Version
+ * 1.1 (the "License"); you may not use this SMF modification except in compliance with
+ * the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
