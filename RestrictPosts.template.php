@@ -81,7 +81,7 @@ function template_rp_admin_post_setting_panel()
 			<div class="windowbg2">
 				<span class="topslice"><span></span></span>';
 	
-				foreach($context['restrict_posts']['board_info'] as $board_info)
+				foreach ($context['restrict_posts']['board_info'] as $board_info)
 				{
 					echo '
 					<fieldset style="width: 95%; margin: 0 auto; margin-bottom: 20px;">';
@@ -89,7 +89,7 @@ function template_rp_admin_post_setting_panel()
 					echo '
 					<legend class="global_perm_heading" id="'. $board_info['id_board']. '">' . $board_info['board_name'] . '</legend>';
 	
-					if(empty($board_info['groups_data'])) {
+					if (empty($board_info['groups_data'])) {
 						echo $txt['rp_no_groups_found'];
 					}
 	
@@ -139,12 +139,12 @@ function template_rp_admin_general_setting_panel()
 				<span class="topslice"><span></span></span>
 					<div class="content">';
 	
-					foreach($context['config_vars'] as $config_var) {
+					foreach ($context['config_vars'] as $config_var) {
 						echo '
 						<dl class="settings">
 							<dt>
 								<span>'. $txt[$config_var['name']] .'</span>';
-								if(isset($config_var['subtext']) && !empty($config_var['subtext'])) {
+								if (isset($config_var['subtext']) && !empty($config_var['subtext'])) {
 									echo '
 									<br /><span class="smalltext">', $config_var['subtext'] ,'</span>';
 								}

@@ -112,14 +112,14 @@ function RP_add_restrict_data($data = array()) {
 	global $smcFunc;
 
 	//not possible, if it still happens, go back
-	if(!is_array($data)) {
+	if (!is_array($data)) {
 		return;
 	}
 
 	//Just empty the data and add new data
 	RP_clear_restrict_data();
 
-	foreach($data as $val) {
+	foreach ($data as $val) {
 		$smcFunc['db_insert']('',
 			'{db_prefix}restrict_posts',
 			array(
@@ -181,7 +181,7 @@ function RP_isAllowedToPost() {
 	$smcFunc['db_free_result']($request);
 
 	//echo 'before count';
-	if(!empty($count) && $count >= $max_posts_allowed) {
+	if (!empty($count) && $count >= $max_posts_allowed) {
 		return false;
 	} else {
 		return true;
@@ -216,7 +216,7 @@ function RP_isAllowedToPostEvents() {
 	}
 	$smcFunc['db_free_result']($request);
 
-	foreach($temp_boards_to_exclude as $key => $val) {
+	foreach ($temp_boards_to_exclude as $key => $val) {
 		$request = $smcFunc['db_query']('', '
 			SELECT COUNT(m.id_msg)
 			FROM {db_prefix}messages as m
@@ -232,7 +232,7 @@ function RP_isAllowedToPostEvents() {
 		);
 		list ($count) = $smcFunc['db_fetch_row']($request);
 		$smcFunc['db_free_result']($request);
-		if(!empty($count) && $count >= $val['max_posts_allowed']) {
+		if (!empty($count) && $count >= $val['max_posts_allowed']) {
 			$boards_to_exclude[] = $key;
 		}
 	}

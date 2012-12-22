@@ -129,9 +129,9 @@ function basicRestrictPostsSettings($return_config = false)
 	$context['restrict_posts']['status'] = RP_load_post_restrict_status();
 
 
-	foreach($context['restrict_posts']['board_info'] as $board_key => $boards) {
-		foreach($context['restrict_posts']['groups'] as $groups_key => $groups) {
-			if(in_array($groups['id_group'], $boards['member_groups'])) {
+	foreach ($context['restrict_posts']['board_info'] as $board_key => $boards) {
+		foreach ($context['restrict_posts']['groups'] as $groups_key => $groups) {
+			if (in_array($groups['id_group'], $boards['member_groups'])) {
 				$context['restrict_posts']['board_info'][$board_key]['groups_data'][$boards['id_board'] . '_' .$groups['id_group']] = array(
 					'id_group' => $groups['id_group'],
 					'group_name' => $groups['group_name'],
@@ -141,8 +141,8 @@ function basicRestrictPostsSettings($return_config = false)
 			}
 		}
 
-		foreach($context['restrict_posts']['status'] as $status_key => $status) {
-			if($status['id_board'] === $boards['id_board'] && isset($context['restrict_posts']['board_info'][$board_key]['groups_data']) && isset($context['restrict_posts']['board_info'][$board_key]['groups_data'][$boards['id_board'] . '_' . $status['id_group']])) {
+		foreach ($context['restrict_posts']['status'] as $status_key => $status) {
+			if ($status['id_board'] === $boards['id_board'] && isset($context['restrict_posts']['board_info'][$board_key]['groups_data']) && isset($context['restrict_posts']['board_info'][$board_key]['groups_data'][$boards['id_board'] . '_' . $status['id_group']])) {
 					$context['restrict_posts']['board_info'][$board_key]['groups_data'][$boards['id_board'] . '_' .$status['id_group']]['max_posts_allowed'] = $status['max_posts_allowed'];
 					$context['restrict_posts']['board_info'][$board_key]['groups_data'][$boards['id_board'] . '_' .$status['id_group']]['timespan'] = $status['timespan'];
 			}
@@ -165,13 +165,13 @@ function saveRestrictPostsSettings() {
 	//Now we have posts data in a much proper manner
 	$data = array();
 	unset($_POST['submit']);
-	foreach($_POST as $key => $value) {
+	foreach ($_POST as $key => $value) {
 		
 		//just boom the data, let them get happy
 		$temp_data = explode('_', $key);
 
 		//if i found something fishy, you are going back
-		if(!is_numeric($temp_data[0]) || !is_numeric($temp_data[2])) {
+		if (!is_numeric($temp_data[0]) || !is_numeric($temp_data[2])) {
 			return false;
 		}
 
@@ -179,7 +179,7 @@ function saveRestrictPostsSettings() {
 		$id_group = (int) $temp_data[2];
 
 		if ($temp_data[1] === 'posts') {
-			if(isset($data[$id_board . '_' . $id_group])) {
+			if (isset($data[$id_board . '_' . $id_group])) {
 				$data[$id_board . '_' . $id_group]['max_posts_allowed'] = (int) $value;
 			} else {
 				$data[$id_board . '_' . $id_group] = array(
@@ -189,7 +189,7 @@ function saveRestrictPostsSettings() {
 				);
 			}
 		} else if ($temp_data[1] === 'timespan') {
-			if(isset($data[$id_board . '_' . $id_group])) {
+			if (isset($data[$id_board . '_' . $id_group])) {
 				$data[$id_board . '_' . $id_group]['timespan'] = (int) $value;
 			} else {
 				$data[$id_board . '_' . $id_group] = array(
@@ -204,7 +204,7 @@ function saveRestrictPostsSettings() {
 	//Lets clear the junk values
 	$context['restrict_posts_db_data'] = sanitizeRestrictDBData($data);
 
-	if(empty($context['restrict_posts_db_data'])) {
+	if (empty($context['restrict_posts_db_data'])) {
 		// They might want to clear some data
 		RP_clear_restrict_data();
 		redirectexit('action=admin;area=restrictposts;sa=postsettings');
@@ -217,12 +217,12 @@ function saveRestrictPostsSettings() {
 function sanitizeRestrictDBData ($data = array()) {
 	global $context;
 	
-	if(!is_array($data)) {
+	if (!is_array($data)) {
 		$data = array($data);
 	}
 
-	foreach($data as $key => $val) {
-		if(empty($val['max_posts_allowed']) || empty($val['timespan'])) {
+	foreach ($data as $key => $val) {
+		if (empty($val['max_posts_allowed']) || empty($val['timespan'])) {
 			unset($data[$key]);
 		}
 	}
@@ -267,11 +267,11 @@ function isAllowedToPost() {
 	global $context, $user_info, $sourcedir;
 
 	require_once($sourcedir . '/Subs-RestrictPosts.php');
-	if(!isset($context['current_board'])) {
+	if (!isset($context['current_board'])) {
 		return false;
 	}
 
-	if($user_info['is_admin']) {
+	if ($user_info['is_admin']) {
 		return true;
 	}
 
@@ -284,7 +284,7 @@ function isAllowedToPostEvents() {
 
 	require_once($sourcedir . '/Subs-RestrictPosts.php');
 
-	if($user_info['is_admin']) {
+	if ($user_info['is_admin']) {
 		return true;
 	}
 
