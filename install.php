@@ -36,7 +36,7 @@ if (file_exists(dirname(__FILE__) . '/SSI.php') && !defined('SMF'))
 elseif (!defined('SMF'))
 	exit('<b>Error:</b> Cannot install - please verify you put this in the same place as SMF\'s index.php.');
 
-global $smcFunc, $sourcedir;
+global $smcFunc, $sourcedir, $db_prefix;
 
 if (!array_key_exists('db_add_column', $smcFunc))
 db_extend('packages');
@@ -77,8 +77,20 @@ $table = array(
 	),
 	'indexes' => array(),
 );
-
 $smcFunc['db_create_table']('{db_prefix}' . $table['table_name'], $table['columns'], $table['indexes']);
+
+// For all general settings add 'rp_mod_' as prefix
+$general_settings = array(
+	'rp_mod_enable' => 0, // Disable by default
+    'rp_mod_enable_calendar' => 0, // Disbale by default on calendar
+);
+
+foreach ($general_settings as $key => $value) {
+    $smcFunc['db_insert']('ignore',
+        '{db_prefix}settings', array('variable' => 'string', 'value' => 'string'),
+        array($key, $value), ''
+    );
+}
 
 //add_integration_function('integrate_pre_include', '$sourcedir/RestrictPosts.php');
 add_integration_function('integrate_pre_include', $sourcedir . '/RestrictPosts.php', true);

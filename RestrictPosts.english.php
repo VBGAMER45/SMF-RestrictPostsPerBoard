@@ -32,16 +32,25 @@
 
 global $txt;
 
-$txt['RP_menu'] = 'Restrict Posts Per Board';
-$txt['RP_basic_settings'] = 'Settings';
-$txt['RP_admin_panel'] = 'Restrict Posts admin panel';
-$txt['RP_admin_panel_desc'] = 'This is the admin panel for the Restrict Posts per Board mod.';
+$txt['rp_menu'] = 'Restrict Posts Per Board';
+$txt['rp_admin_panel'] = 'Restrict Posts admin panel';
+$txt['rp_general_desc'] = 'This is the admin panel for the Restrict Posts per Board mod.';
 
-$txt['rp_basic_tab'] = 'Basic';
-$txt['rp_basic_tab_desc'] = 'From here you can allow the number of posts a group can make on a board in a give time span.';
+$txt['rp_post_settings'] = 'Restrict Posts';
+$txt['rp_basic_post_settings_desc'] = 'This section allows you to put restriction on each membergroup on per board per post basis.';
+$txt['rp_general_settings'] = 'Settings';
+$txt['rp_general_settings_desc'] = 'This section allows you to handle global settings for the mod.';
+
+// Strings for post area
 $txt['rp_max_posts'] = 'Max posts';
 $txt['rp_time_limit'] = 'Time Limit';
 $txt['rp_limit_reached'] = 'Oops, it looks like you have reached your posting limit.';
 $txt['rp_no_groups_found'] = 'Please add some groups in the board.';
+
+// Strings for generic settings
+$txt['rp_mod_enable'] = 'Enable restrict posts mod';
+$txt['rp_mod_enable_calendar'] = 'Enable  restrict posts mod settings on calendar';
+
+$txt['rp_submit'] = 'Submit';
 
 ?>

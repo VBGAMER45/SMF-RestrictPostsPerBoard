@@ -41,7 +41,7 @@ function RestrictPostsAdmin(&$admin_areas)
 	loadtemplate('RestrictPosts');
 
 	$admin_areas['config']['areas']['restrictposts'] = array(
-		'label' => $txt['RP_menu'],
+		'label' => $txt['rp_menu'],
 		'file' => 'RestrictPosts.php',
 		'function' => 'ModifyRestrictPostsSettings',
 		'icon' => 'administration.gif',
@@ -60,21 +60,30 @@ function ModifyRestrictPostsSettings($return_config = false)
 	loadLanguage('RestrictPosts');
 	loadtemplate('RestrictPosts');
 
-	$context['page_title'] = $txt['RP_admin_panel'];
+	$context['page_title'] = $txt['rp_admin_panel'];
 	$default_action_func = 'basicRestrictPostsSettings';
 
 	// Load up the guns
 	$context[$context['admin_menu_name']]['tab_data'] = array(
-		'title' => $txt['RP_admin_panel'],
-		'description' => $txt['RP_admin_panel_desc'],
+		'title' => $txt['rp_admin_panel'],
 		'tabs' => array(
-			'basic' => array(),
+			'postsettings' => array(
+				'label' => $txt['rp_post_settings'],
+				'url' => 'postsettings',
+			),
+			'generalsettings' => array(
+				'label' => $txt['rp_general_settings'],
+				'url' => 'generalsettings',
+			),
 		),
 	);
+	$context[$context['admin_menu_name']]['tab_data']['active_button'] = isset($_REQUEST['sa']) ? $_REQUEST['sa'] : 'postsettings';
 
 	$subActions = array(
-		'basic' => 'basicRestrictPostsSettings',
-		'savesettings' => 'saveRestrictPostsSettings'
+		'postsettings' => 'basicRestrictPostsSettings',
+		'savepostsettings' => 'saveRestrictPostsSettings',
+		'generalsettings' => 'generalRestrictPostsSettings',
+		'savegeneralsettings' => 'saveRestrictGeneralSettings',
 	);
 
 	//wakey wakey, call the func you lazy
@@ -141,10 +150,9 @@ function basicRestrictPostsSettings($return_config = false)
 		unset($context['restrict_posts']['board_info'][$board_key]['member_groups']);
 	}
 
-	$context['page_title'] = $txt['RP_admin_panel'];
-	$context['sub_template'] = 'rp_admin_panel';
-	$context['restrict_posts']['tab_name'] = $txt['rp_basic_tab'];
-	$context['restrict_posts']['tab_desc'] = $txt['rp_basic_tab_desc'];
+	$context['page_title'] = $txt['rp_admin_panel'];
+	$context['sub_template'] = 'rp_admin_post_setting_panel';
+	$context['restrict_posts']['tab_desc'] = $txt['rp_basic_post_settings_desc'];
 }
 
 function saveRestrictPostsSettings() {
@@ -216,6 +224,39 @@ function sanitizeRestrictDBData ($data = array()) {
 		}
 	}
 	return $data;
+}
+
+function generalRestrictPostsSettings() {
+	global $context, $txt, $modSettings, $sourcedir;
+
+	require_once($sourcedir . '/ManageServer.php');
+	$general_settings = array(
+		array('check', 'rp_mod_enable'),
+		array('check', 'rp_mod_enable_calendar'),
+	);
+
+	$context['page_title'] = $txt['rp_admin_panel'];
+	$context['sub_template'] = 'rp_admin_general_setting_panel';
+	$context['restrict_posts']['tab_desc'] = $txt['rp_general_settings_desc'];
+	prepareDBSettingContext($general_settings);
+}
+
+function saveRestrictGeneralSettings() {
+	global $context, $sourcedir;
+
+	if (isset($_POST['submit']))
+	{
+		checkSession();
+
+		$general_settings = array(
+			array('check', 'rp_mod_enable'),
+			array('check', 'rp_mod_enable_calendar'),
+		);
+
+		require_once($sourcedir . '/ManageServer.php');
+		saveDBSettings($general_settings);
+		redirectexit('action=admin;area=restrictposts;sa=generalsettings');
+	}
 }
 
 function isAllowedToPost() {
