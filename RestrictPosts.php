@@ -152,6 +152,7 @@ function basicRestrictPostsSettings($return_config = false)
 
 	$context['page_title'] = $txt['rp_admin_panel'];
 	$context['sub_template'] = 'rp_admin_post_setting_panel';
+	$context['restrict_posts']['tab_name'] = $txt['rp_post_settings'];
 	$context['restrict_posts']['tab_desc'] = $txt['rp_basic_post_settings_desc'];
 }
 
@@ -237,6 +238,7 @@ function generalRestrictPostsSettings() {
 
 	$context['page_title'] = $txt['rp_admin_panel'];
 	$context['sub_template'] = 'rp_admin_general_setting_panel';
+	$context['restrict_posts']['tab_name'] = $txt['rp_general_settings'];
 	$context['restrict_posts']['tab_desc'] = $txt['rp_general_settings_desc'];
 	prepareDBSettingContext($general_settings);
 }

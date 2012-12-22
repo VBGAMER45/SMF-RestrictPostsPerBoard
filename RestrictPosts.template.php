@@ -60,6 +60,13 @@ function template_rp_admin_info() {
 		echo '
 		</ul>
 	</div><br class="clear" />';
+
+	echo '
+	<div class="cat_bar">
+		<h3 class="catbg">
+			', $context['restrict_posts']['tab_name'] ,'
+		</h3>
+	</div>';
 }
 
 function template_rp_admin_post_setting_panel()
