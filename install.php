@@ -55,7 +55,6 @@ $table = array(
 		array(
 			'name' => 'id_group',
 			'type' => 'smallint',
-			'unsigned' => true,
 			'size' => 5,
 			'null' => false,
 		),

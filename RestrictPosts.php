@@ -205,10 +205,12 @@ function saveRestrictPostsSettings() {
 	$context['restrict_posts_db_data'] = sanitizeRestrictDBData($data);
 
 	if(empty($context['restrict_posts_db_data'])) {
-		redirectexit('action=admin;area=restrictposts;sa=basic');
+		// They might want to clear some data
+		RP_clear_restrict_data();
+		redirectexit('action=admin;area=restrictposts;sa=postsettings');
 	} else {
 		RP_add_restrict_data($context['restrict_posts_db_data']);
-		redirectexit('action=admin;area=restrictposts;sa=basic');
+		redirectexit('action=admin;area=restrictposts;sa=postsettings');
 	}
 }
 
