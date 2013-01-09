@@ -2,7 +2,7 @@
 
 /**
 * @package manifest file for Restrict Boards per post
-* @version 1.0
+* @version 1.0.1
 * @author Joker (http://www.simplemachines.org/community/index.php?action=profile;u=226111)
 * @copyright Copyright (c) 2012, Siddhartha Gupta
 * @license http://www.mozilla.org/MPL/MPL-1.1.html
@@ -171,10 +171,14 @@ function RP_isAllowedToPost() {
 		FROM {db_prefix}messages as m
 		INNER JOIN {db_prefix}members as mem on (mem.id_member = m.id_member)
 		WHERE m.poster_time > {int:poster_time}
-		AND mem.id_group IN ({array_int:id_group})',
+		AND mem.id_member = {int:id_member}
+		AND mem.id_group IN ({array_int:id_group})
+		AND m.id_board = {int:id_board}',
 		array(
+			'id_member' => $user_info['id'],
 			'poster_time' => $timespan,
-			'id_group' => $user_info['groups']
+			'id_group' => $user_info['groups'],
+			'id_board' => $context['current_board'],
 		)
 	);
 	list ($count) = $smcFunc['db_fetch_row']($request);
@@ -222,9 +226,11 @@ function RP_isAllowedToPostEvents() {
 			FROM {db_prefix}messages as m
 			INNER JOIN {db_prefix}members as mem on (mem.id_member = m.id_member)
 			WHERE m.poster_time > {int:poster_time}
+			AND mem.id_member = {int:id_member}
 			AND m.id_board = {int:id_board}
 			AND mem.id_group IN ({array_int:id_group})',
 			array(
+				'id_member' => $user_info['id'],
 				'poster_time' => $val['timespan'],
 				'id_board' => $key,
 				'id_group' => $user_info['groups']

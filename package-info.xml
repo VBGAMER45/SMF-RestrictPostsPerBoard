@@ -3,7 +3,7 @@
 <package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
 	<id>sid2varun:restrict_posts</id>
 	<name>Restrict Posts</name>
-	<version>1.0</version>
+	<version>1.0.1</version>
 	<type>modification</type>
 
 	<install for="2.0 - 2.0.99">
@@ -26,4 +26,7 @@
 		<redirect url="$scripturl?action=admin;area=packages;sa=browse" timeout="1000" />
 	</uninstall>
 
+	<upgrade for="2.0 - 2.0.99" from="1.0">
+		<require-file name="Subs-RestrictPosts.php" destination="$sourcedir">Database handler</require-file>
+    </upgrade>
 </package-info>
