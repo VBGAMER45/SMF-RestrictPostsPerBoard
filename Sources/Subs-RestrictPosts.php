@@ -2,7 +2,7 @@
 
 /**
 * @package manifest file for Restrict Boards per post
-* @version 1.0.1
+* @version 1.1
 * @author Joker (http://www.simplemachines.org/community/index.php?action=profile;u=226111)
 * @copyright Copyright (c) 2012, Siddhartha Gupta
 * @license http://www.mozilla.org/MPL/MPL-1.1.html
@@ -33,8 +33,7 @@
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
-function RP_load_all_boards()
-{
+function RP_load_all_boards() {
 	global $smcFunc;
 	
 	$request = $smcFunc['db_query']('', '
@@ -58,8 +57,7 @@ function RP_load_all_boards()
 	return $boards_info;
 }
 
-function RP_load_all_member_groups()
-{
+function RP_load_all_member_groups() {
 	global $smcFunc;
 
 	$exclude_groups = array('1', '3');
@@ -84,8 +82,7 @@ function RP_load_all_member_groups()
 	return $groups_info;
 }
 
-function RP_load_post_restrict_status()
-{
+function RP_load_post_restrict_status() {
 	global $smcFunc;
 
 	$request = $smcFunc['db_query']('', '
@@ -142,8 +139,13 @@ function RP_clear_restrict_data() {
 	);
 }
 
-function RP_isAllowedToPost() {
+function RP_DB_getRestrictParams() {
 	global $smcFunc, $context, $user_info;
+
+	$restrictParams = array(
+		'max_posts_allowed' => 0,
+		'timespan' => 0
+	);
 
 	$request = $smcFunc['db_query']('', '
 		SELECT MIN(max_posts_allowed) as max_posts_allowed, MIN(timespan) as timespan
@@ -157,27 +159,38 @@ function RP_isAllowedToPost() {
 	);
 
 	if ($smcFunc['db_num_rows']($request) == 0) {
-		return true;
+		return $restrictParams;
 	}
+
 	//another cool method strtotime("-5 day");
 	//time() - 86400 * $row['timespan'];
-	list ($max_posts_allowed, $timespan) = $smcFunc['db_fetch_row']($request);
+	list ($restrictParams['max_posts_allowed'], $restrictParams['timespan']) = $smcFunc['db_fetch_row']($request);
 	$smcFunc['db_free_result']($request);
 
-	$timespan = time() - 86400 * $timespan;
+	return $restrictParams;
+}
+
+function RP_DB_isAllowedToPostTopics() {
+	global $smcFunc, $context, $user_info;
+
+	$restrictParams = RP_DB_getRestrictParams();
+
+	if(empty($restrictParams['max_posts_allowed'])) {
+		return true;
+	}
+
+	$timespan = time() - 86400 * $restrictParams['timespan'];
 
 	$request = $smcFunc['db_query']('', '
-		SELECT COUNT(m.id_msg)
-		FROM {db_prefix}messages as m
-		INNER JOIN {db_prefix}members as mem on (mem.id_member = m.id_member)
-		WHERE m.poster_time > {int:poster_time}
-		AND mem.id_member = {int:id_member}
-		AND mem.id_group IN ({array_int:id_group})
-		AND m.id_board = {int:id_board}',
+		SELECT COUNT(t.id_topic)
+		FROM {db_prefix}topics as t
+		INNER JOIN {db_prefix}messages as m on (m.id_msg = t.id_first_msg)
+		WHERE t.id_member_started = {int:id_member}
+		AND t.id_board = {int:id_board}
+		AND m.poster_time > {int:poster_time}',
 		array(
 			'id_member' => $user_info['id'],
 			'poster_time' => $timespan,
-			'id_group' => $user_info['groups'],
 			'id_board' => $context['current_board'],
 		)
 	);
@@ -185,14 +198,50 @@ function RP_isAllowedToPost() {
 	$smcFunc['db_free_result']($request);
 
 	//echo 'before count';
-	if (!empty($count) && $count >= $max_posts_allowed) {
+	if (!empty($count) && $count >= $restrictParams['max_posts_allowed']) {
 		return false;
 	} else {
 		return true;
 	}
 }
 
-function RP_isAllowedToPostEvents() {
+function RP_DB_isAllowedToPostReplies() {
+	global $smcFunc, $context, $user_info;
+
+	$restrictParams = RP_DB_getRestrictParams();
+
+	if(empty($restrictParams['max_posts_allowed'])) {
+		return true;
+	}
+
+	$timespan = time() - 86400 * $restrictParams['timespan'];
+
+	$request = $smcFunc['db_query']('', '
+		SELECT COUNT(m.id_msg)
+		FROM {db_prefix}messages as m
+		LEFT JOIN {db_prefix}topics as t on (m.id_topic = t.id_topic)
+		WHERE m.id_member = {int:id_member}
+		AND m.id_board = {int:id_board}
+		AND m.poster_time > {int:poster_time}
+		AND m.id_msg != t.id_first_msg',
+		array(
+			'id_member' => $user_info['id'],
+			'poster_time' => $timespan,
+			'id_board' => $context['current_board'],
+		)
+	);
+	list ($count) = $smcFunc['db_fetch_row']($request);
+	$smcFunc['db_free_result']($request);
+
+	//echo 'before count';
+	if (!empty($count) && $count >= $restrictParams['max_posts_allowed']) {
+		return false;
+	} else {
+		return true;
+	}
+}
+
+function RP_DB_isAllowedToPostEvents() {
 	global $smcFunc, $context, $user_info;
 
 	$boards_to_exclude = array();
@@ -210,8 +259,7 @@ function RP_isAllowedToPostEvents() {
 		return $boards_to_exclude;
 	}
 	$temp_boards_to_exclude = array();
-	//another cool method strtotime("-5 day");
-	//time() - 86400 * $row['timespan'];
+
 	while ($row = $smcFunc['db_fetch_assoc']($request)) {
 		$temp_boards_to_exclude[$row['id_board']] = array(
 			'max_posts_allowed' => $row['max_posts_allowed'],
@@ -222,22 +270,21 @@ function RP_isAllowedToPostEvents() {
 
 	foreach ($temp_boards_to_exclude as $key => $val) {
 		$request = $smcFunc['db_query']('', '
-			SELECT COUNT(m.id_msg)
-			FROM {db_prefix}messages as m
-			INNER JOIN {db_prefix}members as mem on (mem.id_member = m.id_member)
-			WHERE m.poster_time > {int:poster_time}
-			AND mem.id_member = {int:id_member}
-			AND m.id_board = {int:id_board}
-			AND mem.id_group IN ({array_int:id_group})',
+			SELECT COUNT(t.id_topic)
+			FROM {db_prefix}topics as t
+			INNER JOIN {db_prefix}messages as m on (m.id_msg = t.id_first_msg)
+			WHERE t.id_member_started = {int:id_member}
+			AND t.id_board = {int:id_board}
+			AND m.poster_time > {int:poster_time}',
 			array(
 				'id_member' => $user_info['id'],
 				'poster_time' => $val['timespan'],
 				'id_board' => $key,
-				'id_group' => $user_info['groups']
 			)
 		);
 		list ($count) = $smcFunc['db_fetch_row']($request);
 		$smcFunc['db_free_result']($request);
+
 		if (!empty($count) && $count >= $val['max_posts_allowed']) {
 			$boards_to_exclude[] = $key;
 		}

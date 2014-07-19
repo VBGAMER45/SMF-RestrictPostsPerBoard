@@ -2,7 +2,7 @@
 
 /**
 * @package manifest file for Restrict Boards per post
-* @version 1.0.1
+* @version 1.1
 * @author Joker (http://www.simplemachines.org/community/index.php?action=profile;u=226111)
 * @copyright Copyright (c) 2012, Siddhartha Gupta
 * @license http://www.mozilla.org/MPL/MPL-1.1.html
@@ -48,8 +48,7 @@ function template_rp_admin_info() {
 	
 		// Print out all the items in this tab.
 		$menu_buttons = $context[$context['admin_menu_name']]['tab_data'];
-		foreach ($menu_buttons['tabs'] as $sa => $tab)
-		{
+		foreach ($menu_buttons['tabs'] as $sa => $tab) {
 			echo '
 			<li>
 				<a class="', ($menu_buttons['active_button'] == $tab['url']) ? 'active ' : '', 'firstlevel" href="', $scripturl, '?action=admin;area=restrictposts;sa=', $tab['url'],'"><span class="firstlevel">', $tab['label'], '</span></a>
@@ -69,65 +68,7 @@ function template_rp_admin_info() {
 	</div>';
 }
 
-function template_rp_admin_post_setting_panel()
-{
-	global $context, $txt, $scripturl;
-
-	template_rp_admin_info();
-
-	echo '
-	<div id="admincenter">
-		<form action="'. $scripturl .'?action=admin;area=restrictposts;sa=savepostsettings" method="post" accept-charset="UTF-8">
-			<div class="windowbg2">
-				<span class="topslice"><span></span></span>';
-	
-				foreach ($context['restrict_posts']['board_info'] as $board_info)
-				{
-					echo '
-					<fieldset style="width: 95%; margin: 0 auto; margin-bottom: 20px;">';
-	
-					echo '
-					<legend class="global_perm_heading" id="'. $board_info['id_board']. '">' . $board_info['board_name'] . '</legend>';
-	
-					if (empty($board_info['groups_data'])) {
-						echo $txt['rp_no_groups_found'];
-					}
-	
-					else {
-						foreach ($board_info['groups_data'] as $key => $group)
-						{
-							//print_r($group);
-							echo '
-							<div style="width: 25%; float: left">
-								<label for="' . $group['id_group'] . '">' . $group['group_name'] . '</label>
-							</div>';
-
-							echo '
-							<input type="text" name="' . $board_info['id_board'] . '_posts_'.$group['id_group'].'" id="" value="', $group['max_posts_allowed'] ,'" class="input_text" placeholder="'. $txt['rp_max_posts'] .'" />';
-							echo '
-							<input type="text" name="' . $board_info['id_board'] . '_timespan_'.$group['id_group'].'" id="" value="', $group['timespan'] ,'" class="input_text" placeholder="'. $txt['rp_time_limit'] .'" /><br />';
-						}
-					}
-			
-					echo '
-					</fieldset>';
-				}
-	
-					echo '
-					<input type="submit" name="submit" value="', $txt['rp_submit'], '" tabindex="', $context['tabindex']++, '" class="button_submit" />';
-	
-				echo '
-				<span class="botslice"><span></span></span>
-			</div>
-	
-		</form>
-	</div>
-	<br class="clear">';
-}
-
-
-function template_rp_admin_general_setting_panel()
-{
+function template_rp_admin_general_setting_panel() {
 	global $context, $txt, $scripturl;
 
 	template_rp_admin_info();
@@ -149,11 +90,24 @@ function template_rp_admin_general_setting_panel()
 									<br /><span class="smalltext">', $config_var['subtext'] ,'</span>';
 								}
 							echo '
-							</dt>
-							<dd>
-								<input type="checkbox" name="', $config_var['name'], '" id="', $config_var['name'], '"', ($config_var['value'] ? ' checked="checked"' : ''), ' value="1" class="input_check" />
-							</dd>
-						</dl>';
+							</dt><dd>';
+
+							if($config_var['type'] === 'check') {
+								echo '
+								<input type="checkbox" name="', $config_var['name'], '" id="', $config_var['name'], '"', ($config_var['value'] ? ' checked="checked"' : ''), ' value="1" class="input_check" />';
+							} else if($config_var['type'] === 'select') {
+								echo '
+									<select name="', $config_var['name'], '" id="', $config_var['name'], '" ', '>';
+
+								foreach ($config_var['data'] as $option)
+								echo '
+										<option value="', $option[0], '"', (($option[0] == $config_var['value'] || (!empty($config_var['multiple']) && in_array($option[0], $config_var['value']))) ? ' selected="selected"' : ''), '>', $option[1], '</option>';
+								echo '
+									</select>';
+							}
+
+						echo '
+						</dd></dl>';
 					}
 	
 					echo '
@@ -162,6 +116,56 @@ function template_rp_admin_general_setting_panel()
 		
 					echo '
 					</div>
+				<span class="botslice"><span></span></span>
+			</div>
+	
+		</form>
+	</div>
+	<br class="clear">';
+}
+
+function template_rp_admin_post_setting_panel() {
+	global $context, $txt, $scripturl, $modSettings;
+
+	template_rp_admin_info();
+
+	echo '
+	<div id="admincenter">
+		<form action="'. $scripturl .'?action=admin;area=restrictposts;sa=savepostsettings" method="post" accept-charset="UTF-8">
+			<div class="windowbg2">
+				<span class="topslice"><span></span></span>';
+	
+				foreach ($context['restrict_posts']['board_info'] as $board_info) {
+					echo '
+					<fieldset style="width: 95%; margin: 0 auto; margin-bottom: 20px;">';
+	
+					echo '
+					<legend class="global_perm_heading" id="'. $board_info['id_board']. '">' . $board_info['board_name'] . '</legend>';
+	
+					if (empty($board_info['groups_data'])) {
+						echo $txt['rp_no_groups_found'];
+					} else {
+						foreach ($board_info['groups_data'] as $key => $group) {
+							echo '
+							<div style="width: 25%; float: left">
+								<label for="' . $group['id_group'] . '">' . $group['group_name'] . '</label>
+							</div>';
+
+							echo '
+							<input type="text" name="' . $board_info['id_board'] . '_posts_'.$group['id_group'].'" id="" value="', $group['max_posts_allowed'] ,'" class="input_text" placeholder="'. $txt['rp_max'] . $modSettings['rp_restrict_method'] .'" />';
+							echo '
+							<input type="text" name="' . $board_info['id_board'] . '_timespan_'.$group['id_group'].'" id="" value="', $group['timespan'] ,'" class="input_text" placeholder="'. $txt['rp_time_limit'] .'" /><br />';
+						}
+					}
+			
+					echo '
+					</fieldset>';
+				}
+	
+					echo '
+					<input type="submit" name="submit" value="', $txt['rp_submit'], '" tabindex="', $context['tabindex']++, '" class="button_submit" />';
+	
+				echo '
 				<span class="botslice"><span></span></span>
 			</div>
 	

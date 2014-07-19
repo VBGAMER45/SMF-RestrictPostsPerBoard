@@ -3,7 +3,7 @@
 <!-- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /**
 * @package manifest file for Restrict Boards per post
-* @version 1.0.1
+* @version 1.1
 * @author Joker (http://www.simplemachines.org/community/index.php?action=profile;u=226111)
 * @copyright Copyright (c) 2012, Siddhartha Gupta
 * @license http://www.mozilla.org/MPL/MPL-1.1.html
@@ -34,15 +34,24 @@
 
 <modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
 	<id>sid2varun:restrict_posts</id>
-	<version>1.0.1</version>
+	<version>1.1</version>
 
 	<file name="$sourcedir/Post.php">
 		<operation>
 			<search position="after"><![CDATA[// You can't reply with a poll... hacker.]]></search>
-			<add><![CDATA[if(isset($modSettings['rp_mod_enable']) && !empty($modSettings['rp_mod_enable'])) {
-		if(!isAllowedToPost() && !isset($_REQUEST['calendar']) && empty($topic)) {
-			loadLanguage('RestrictPosts');
-			fatal_lang_error('rp_limit_reached', false);
+			<add><![CDATA[if(isset($modSettings['rp_mod_enable']) && !empty($modSettings['rp_mod_enable']) && !isset($_REQUEST['calendar'])) {
+		if($modSettings['rp_restrict_method'] === 'topics' && empty($topic)) {
+			// Check for new topic
+			if(!RP_isAllowedToPost()) {
+				loadLanguage('RestrictPosts');
+				fatal_lang_error('rp_limit_reached', false);
+			}
+		} else if($modSettings['rp_restrict_method'] === 'replies' && !empty($topic)) {
+			// Check for replies
+			if(!RP_isAllowedToPost()) {
+				loadLanguage('RestrictPosts');
+				fatal_lang_error('rp_limit_reached', false);
+			}
 		}
 	}
 
@@ -53,8 +62,8 @@
 			<search position="before"><![CDATA[$boards = boardsAllowedTo('post_new');
 			]]></search>
 			<add><![CDATA[
-			if(isset($modSettings['rp_mod_enable']) && !empty($modSettings['rp_mod_enable']) && isset($modSettings['rp_mod_enable_calendar']) && !empty($modSettings['rp_mod_enable_calendar'])) {
-				$boards_to_exclude = isAllowedToPostEvents();
+			if(isset($modSettings['rp_mod_enable']) && !empty($modSettings['rp_mod_enable']) && isset($modSettings['rp_mod_enable_calendar']) && !empty($modSettings['rp_mod_enable_calendar']) && $modSettings['rp_restrict_method'] === 'topics') {
+				$boards_to_exclude = RP_isAllowedToPostEvents();
 				$boards = array_merge(array_diff($boards, $boards_to_exclude), array_diff($boards_to_exclude, $boards));
 			}
 

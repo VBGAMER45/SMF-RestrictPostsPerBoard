@@ -2,7 +2,7 @@
 
 /**
 * @package manifest file for Restrict Boards per post
-* @version 1.0.1
+* @version 1.1
 * @author Joker (http://www.simplemachines.org/community/index.php?action=profile;u=226111)
 * @copyright Copyright (c) 2012, Siddhartha Gupta
 * @license http://www.mozilla.org/MPL/MPL-1.1.html
@@ -81,14 +81,15 @@ $smcFunc['db_create_table']('{db_prefix}' . $table['table_name'], $table['column
 // For all general settings add 'rp_mod_' as prefix
 $general_settings = array(
 	'rp_mod_enable' => 0, // Disable by default
-    'rp_mod_enable_calendar' => 0, // Disbale by default on calendar
+	'rp_mod_enable_calendar' => 0, // Disbale by default on calendar
+	'rp_restrict_method' => 'topics', // restrict by topics
 );
 
 foreach ($general_settings as $key => $value) {
-    $smcFunc['db_insert']('ignore',
-        '{db_prefix}settings', array('variable' => 'string', 'value' => 'string'),
-        array($key, $value), ''
-    );
+	$smcFunc['db_insert']('ignore',
+		'{db_prefix}settings', array('variable' => 'string', 'value' => 'string'),
+		array($key, $value), ''
+	);
 }
 
 //add_integration_function('integrate_pre_include', '$sourcedir/RestrictPosts.php');

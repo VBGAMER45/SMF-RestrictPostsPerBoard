@@ -3,21 +3,21 @@
 <package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
 	<id>sid2varun:restrict_posts</id>
 	<name>Restrict Posts</name>
-	<version>1.0.1</version>
+	<version>1.1</version>
 	<type>modification</type>
 
 	<install for="2.0 - 2.0.99">
 		<readme type="file" parsebbc="true">readme.txt</readme>
 		<database>install.php</database>
-		<require-file name="RestrictPosts.php" destination="$sourcedir">Controller of modification</require-file>
-		<require-file name="Subs-RestrictPosts.php" destination="$sourcedir">Database handler</require-file>
-		<require-file name="RestrictPosts.template.php" destination="$themedir">View of mod</require-file>
-		<require-file name="RestrictPosts.english.php" destination="$languagedir">All language Strings</require-file>
+		<require-file name="Sources/RestrictPosts.php" destination="$sourcedir">Controller of modification</require-file>
+		<require-file name="Sources/Subs-RestrictPosts.php" destination="$sourcedir">Database handler</require-file>
+		<require-file name="Themes/default/RestrictPosts.template.php" destination="$themedir">View of mod</require-file>
+		<require-file name="Themes/default/languages/RestrictPosts.english.php" destination="$languagedir">All language Strings</require-file>
 		<modification>Modification.xml</modification>
 	</install>
 
 	<uninstall for="2.0 - 2.0.99">
-	    <code>uninstall.php</code>
+		<code>uninstall.php</code>
 		<remove-file name="$sourcedir/RestrictPosts.php" />
 		<remove-file name="$sourcedir/Subs-RestrictPosts.php" />
 		<remove-file name="$themedir/RestrictPosts.template.php" />
@@ -25,8 +25,4 @@
 		<modification reverse="true">Modification.xml</modification>
 		<redirect url="$scripturl?action=admin;area=packages;sa=browse" timeout="1000" />
 	</uninstall>
-
-	<upgrade for="2.0 - 2.0.99" from="1.0">
-		<require-file name="Subs-RestrictPosts.php" destination="$sourcedir">Database handler</require-file>
-    </upgrade>
 </package-info>
