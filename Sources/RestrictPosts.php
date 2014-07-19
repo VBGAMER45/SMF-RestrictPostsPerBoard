@@ -191,7 +191,6 @@ function saveRestrictPostsSettings() {
 
 	isAllowedTo('admin_forum');
 
-	//Now we have posts data in a much proper manner
 	$data = array();
 	unset($_POST['submit']);
 	foreach ($_POST as $key => $value) {

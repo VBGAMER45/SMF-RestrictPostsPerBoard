@@ -219,7 +219,7 @@ function RP_DB_isAllowedToPostReplies() {
 	$request = $smcFunc['db_query']('', '
 		SELECT COUNT(m.id_msg)
 		FROM {db_prefix}messages as m
-		LEFT JOIN {db_prefix}topics as t on (t.id_topic = m.id_topic)
+		LEFT JOIN {db_prefix}topics as t on (m.id_topic = t.id_topic)
 		WHERE m.id_member = {int:id_member}
 		AND m.id_board = {int:id_board}
 		AND m.poster_time > {int:poster_time}
@@ -259,8 +259,7 @@ function RP_DB_isAllowedToPostEvents() {
 		return $boards_to_exclude;
 	}
 	$temp_boards_to_exclude = array();
-	//another cool method strtotime("-5 day");
-	//time() - 86400 * $row['timespan'];
+
 	while ($row = $smcFunc['db_fetch_assoc']($request)) {
 		$temp_boards_to_exclude[$row['id_board']] = array(
 			'max_posts_allowed' => $row['max_posts_allowed'],
@@ -271,22 +270,21 @@ function RP_DB_isAllowedToPostEvents() {
 
 	foreach ($temp_boards_to_exclude as $key => $val) {
 		$request = $smcFunc['db_query']('', '
-			SELECT COUNT(m.id_msg)
-			FROM {db_prefix}messages as m
-			INNER JOIN {db_prefix}members as mem on (mem.id_member = m.id_member)
-			WHERE m.poster_time > {int:poster_time}
-			AND mem.id_member = {int:id_member}
-			AND m.id_board = {int:id_board}
-			AND mem.id_group IN ({array_int:id_group})',
+			SELECT COUNT(t.id_topic)
+			FROM {db_prefix}topics as t
+			INNER JOIN {db_prefix}messages as m on (m.id_msg = t.id_first_msg)
+			WHERE t.id_member_started = {int:id_member}
+			AND t.id_board = {int:id_board}
+			AND m.poster_time > {int:poster_time}',
 			array(
 				'id_member' => $user_info['id'],
 				'poster_time' => $val['timespan'],
 				'id_board' => $key,
-				'id_group' => $user_info['groups']
 			)
 		);
 		list ($count) = $smcFunc['db_fetch_row']($request);
 		$smcFunc['db_free_result']($request);
+
 		if (!empty($count) && $count >= $val['max_posts_allowed']) {
 			$boards_to_exclude[] = $key;
 		}
