@@ -9,10 +9,10 @@
 	<install for="2.0 - 2.0.99">
 		<readme type="file" parsebbc="true">readme.txt</readme>
 		<database>install.php</database>
-		<require-file name="RestrictPosts.php" destination="$sourcedir">Controller of modification</require-file>
-		<require-file name="Subs-RestrictPosts.php" destination="$sourcedir">Database handler</require-file>
-		<require-file name="RestrictPosts.template.php" destination="$themedir">View of mod</require-file>
-		<require-file name="RestrictPosts.english.php" destination="$languagedir">All language Strings</require-file>
+		<require-file name="Sources/RestrictPosts.php" destination="$sourcedir">Controller of modification</require-file>
+		<require-file name="Sources/Subs-RestrictPosts.php" destination="$sourcedir">Database handler</require-file>
+		<require-file name="Themes/default/RestrictPosts.template.php" destination="$themedir">View of mod</require-file>
+		<require-file name="Themes/default/languages/RestrictPosts.english.php" destination="$languagedir">All language Strings</require-file>
 		<modification>Modification.xml</modification>
 	</install>
 
