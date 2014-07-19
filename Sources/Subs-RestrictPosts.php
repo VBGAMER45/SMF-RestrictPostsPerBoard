@@ -139,7 +139,7 @@ function RP_clear_restrict_data() {
 	);
 }
 
-function RP_isAllowedToPost() {
+function RP_DB_isAllowedToPost() {
 	global $smcFunc, $context, $user_info;
 
 	$request = $smcFunc['db_query']('', '
@@ -190,7 +190,7 @@ function RP_isAllowedToPost() {
 	}
 }
 
-function RP_isAllowedToPostEvents() {
+function RP_DB_isAllowedToPostEvents() {
 	global $smcFunc, $context, $user_info;
 
 	$boards_to_exclude = array();

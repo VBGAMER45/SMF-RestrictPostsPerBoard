@@ -256,7 +256,7 @@ function sanitizeRestrictDBData ($data = array()) {
 	return $data;
 }
 
-function isAllowedToPost() {
+function RP_isAllowedToPost() {
 	global $context, $user_info, $sourcedir;
 
 	require_once($sourcedir . '/Subs-RestrictPosts.php');
@@ -268,11 +268,11 @@ function isAllowedToPost() {
 		return true;
 	}
 
-	$rp_is_allowed = RP_isAllowedToPost();
+	$rp_is_allowed = RP_DB_isAllowedToPost();
 	return $rp_is_allowed;
 }
 
-function isAllowedToPostEvents() {
+function RP_isAllowedToPostEvents() {
 	global $user_info, $sourcedir;
 
 	require_once($sourcedir . '/Subs-RestrictPosts.php');
@@ -281,7 +281,7 @@ function isAllowedToPostEvents() {
 		return true;
 	}
 
-	$rp_is_allowed = RP_isAllowedToPostEvents();
+	$rp_is_allowed = RP_DB_isAllowedToPostEvents();
 	return $rp_is_allowed;
 }
 

@@ -40,7 +40,7 @@
 		<operation>
 			<search position="after"><![CDATA[// You can't reply with a poll... hacker.]]></search>
 			<add><![CDATA[if(isset($modSettings['rp_mod_enable']) && !empty($modSettings['rp_mod_enable'])) {
-		if(!isAllowedToPost() && !isset($_REQUEST['calendar']) && empty($topic)) {
+		if(!RP_isAllowedToPost() && !isset($_REQUEST['calendar']) && empty($topic)) {
 			loadLanguage('RestrictPosts');
 			fatal_lang_error('rp_limit_reached', false);
 		}
@@ -54,7 +54,7 @@
 			]]></search>
 			<add><![CDATA[
 			if(isset($modSettings['rp_mod_enable']) && !empty($modSettings['rp_mod_enable']) && isset($modSettings['rp_mod_enable_calendar']) && !empty($modSettings['rp_mod_enable_calendar'])) {
-				$boards_to_exclude = isAllowedToPostEvents();
+				$boards_to_exclude = RP_isAllowedToPostEvents();
 				$boards = array_merge(array_diff($boards, $boards_to_exclude), array_diff($boards_to_exclude, $boards));
 			}
 
