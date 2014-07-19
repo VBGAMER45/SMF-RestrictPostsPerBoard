@@ -48,8 +48,7 @@ function template_rp_admin_info() {
 	
 		// Print out all the items in this tab.
 		$menu_buttons = $context[$context['admin_menu_name']]['tab_data'];
-		foreach ($menu_buttons['tabs'] as $sa => $tab)
-		{
+		foreach ($menu_buttons['tabs'] as $sa => $tab) {
 			echo '
 			<li>
 				<a class="', ($menu_buttons['active_button'] == $tab['url']) ? 'active ' : '', 'firstlevel" href="', $scripturl, '?action=admin;area=restrictposts;sa=', $tab['url'],'"><span class="firstlevel">', $tab['label'], '</span></a>
@@ -82,7 +81,6 @@ function template_rp_admin_general_setting_panel() {
 					<div class="content">';
 	
 					foreach ($context['config_vars'] as $config_var) {
-						// print_r($config_var);
 						echo '
 						<dl class="settings">
 							<dt>
@@ -127,7 +125,7 @@ function template_rp_admin_general_setting_panel() {
 }
 
 function template_rp_admin_post_setting_panel() {
-	global $context, $txt, $scripturl;
+	global $context, $txt, $scripturl, $modSettings;
 
 	template_rp_admin_info();
 
@@ -137,8 +135,7 @@ function template_rp_admin_post_setting_panel() {
 			<div class="windowbg2">
 				<span class="topslice"><span></span></span>';
 	
-				foreach ($context['restrict_posts']['board_info'] as $board_info)
-				{
+				foreach ($context['restrict_posts']['board_info'] as $board_info) {
 					echo '
 					<fieldset style="width: 95%; margin: 0 auto; margin-bottom: 20px;">';
 	
@@ -147,19 +144,15 @@ function template_rp_admin_post_setting_panel() {
 	
 					if (empty($board_info['groups_data'])) {
 						echo $txt['rp_no_groups_found'];
-					}
-	
-					else {
-						foreach ($board_info['groups_data'] as $key => $group)
-						{
-							//print_r($group);
+					} else {
+						foreach ($board_info['groups_data'] as $key => $group) {
 							echo '
 							<div style="width: 25%; float: left">
 								<label for="' . $group['id_group'] . '">' . $group['group_name'] . '</label>
 							</div>';
 
 							echo '
-							<input type="text" name="' . $board_info['id_board'] . '_posts_'.$group['id_group'].'" id="" value="', $group['max_posts_allowed'] ,'" class="input_text" placeholder="'. $txt['rp_max_posts'] .'" />';
+							<input type="text" name="' . $board_info['id_board'] . '_posts_'.$group['id_group'].'" id="" value="', $group['max_posts_allowed'] ,'" class="input_text" placeholder="'. $txt['rp_max'] . $modSettings['rp_restrict_method'] .'" />';
 							echo '
 							<input type="text" name="' . $board_info['id_board'] . '_timespan_'.$group['id_group'].'" id="" value="', $group['timespan'] ,'" class="input_text" placeholder="'. $txt['rp_time_limit'] .'" /><br />';
 						}

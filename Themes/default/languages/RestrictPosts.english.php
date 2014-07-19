@@ -42,7 +42,7 @@ $txt['rp_general_settings'] = 'Settings';
 $txt['rp_general_settings_desc'] = 'This section allows you to handle global settings for the mod.';
 
 // Strings for post area
-$txt['rp_max_posts'] = 'Max posts';
+$txt['rp_max'] = 'Max ';
 $txt['rp_time_limit'] = 'Time Limit';
 $txt['rp_limit_reached'] = 'Oops, it looks like you have reached your posting limit.';
 $txt['rp_no_groups_found'] = 'Please add some groups in the board.';

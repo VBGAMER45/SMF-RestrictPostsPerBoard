@@ -33,8 +33,7 @@
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
-function RP_load_all_boards()
-{
+function RP_load_all_boards() {
 	global $smcFunc;
 	
 	$request = $smcFunc['db_query']('', '
@@ -58,8 +57,7 @@ function RP_load_all_boards()
 	return $boards_info;
 }
 
-function RP_load_all_member_groups()
-{
+function RP_load_all_member_groups() {
 	global $smcFunc;
 
 	$exclude_groups = array('1', '3');
@@ -84,8 +82,7 @@ function RP_load_all_member_groups()
 	return $groups_info;
 }
 
-function RP_load_post_restrict_status()
-{
+function RP_load_post_restrict_status() {
 	global $smcFunc;
 
 	$request = $smcFunc['db_query']('', '
@@ -159,6 +156,7 @@ function RP_isAllowedToPost() {
 	if ($smcFunc['db_num_rows']($request) == 0) {
 		return true;
 	}
+
 	//another cool method strtotime("-5 day");
 	//time() - 86400 * $row['timespan'];
 	list ($max_posts_allowed, $timespan) = $smcFunc['db_fetch_row']($request);

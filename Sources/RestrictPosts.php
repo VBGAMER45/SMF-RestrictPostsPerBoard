@@ -84,12 +84,9 @@ function ModifyRestrictPostsSettings($return_config = false) {
 	);
 
 	//wakey wakey, call the func you lazy
-	foreach ($subActions as $key => $action)
-	{
-		if (isset($_REQUEST['sa']) && $_REQUEST['sa'] === $key)
-		{
-			if (function_exists($subActions[$key]))
-			{
+	foreach ($subActions as $key => $action) {
+		if (isset($_REQUEST['sa']) && $_REQUEST['sa'] === $key) {
+			if (function_exists($subActions[$key])) {
 				return $subActions[$key]();
 			}
 		}
