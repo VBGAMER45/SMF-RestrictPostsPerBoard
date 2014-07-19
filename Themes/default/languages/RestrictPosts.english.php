@@ -52,6 +52,9 @@ $txt['rp_mod_enable'] = 'Enable restrict posts mod';
 $txt['rp_mod_enable_calendar'] = 'Enable  restrict posts mod settings on calendar';
 $txt['rp_enable_disable_mod'] = 'Global permission to enable/disable mod';
 $txt['rp_enable_disable_calendar'] = 'Permission, whether to use the mod settings while making calendar event or not';
+$txt['rp_restrict_method'] = 'Restrict posts by number of:';
+$txt['rp_restrict_by_topics'] = 'topics';
+$txt['rp_restrict_by_replies'] = 'replies';
 
 $txt['rp_submit'] = 'Submit';
 

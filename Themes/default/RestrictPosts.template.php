@@ -69,8 +69,64 @@ function template_rp_admin_info() {
 	</div>';
 }
 
-function template_rp_admin_post_setting_panel()
-{
+function template_rp_admin_general_setting_panel() {
+	global $context, $txt, $scripturl;
+
+	template_rp_admin_info();
+
+	echo '
+	<div id="admincenter">
+		<form action="'. $scripturl .'?action=admin;area=restrictposts;sa=savegeneralsettings" method="post" accept-charset="UTF-8">
+			<div class="windowbg2">
+				<span class="topslice"><span></span></span>
+					<div class="content">';
+	
+					foreach ($context['config_vars'] as $config_var) {
+						// print_r($config_var);
+						echo '
+						<dl class="settings">
+							<dt>
+								<span>'. $txt[$config_var['name']] .'</span>';
+								if (isset($config_var['subtext']) && !empty($config_var['subtext'])) {
+									echo '
+									<br /><span class="smalltext">', $config_var['subtext'] ,'</span>';
+								}
+							echo '
+							</dt><dd>';
+
+							if($config_var['type'] === 'check') {
+								echo '
+								<input type="checkbox" name="', $config_var['name'], '" id="', $config_var['name'], '"', ($config_var['value'] ? ' checked="checked"' : ''), ' value="1" class="input_check" />';
+							} else if($config_var['type'] === 'select') {
+								echo '
+									<select name="', $config_var['name'], '" id="', $config_var['name'], '" ', '>';
+
+								foreach ($config_var['data'] as $option)
+								echo '
+										<option value="', $option[0], '"', (($option[0] == $config_var['value'] || (!empty($config_var['multiple']) && in_array($option[0], $config_var['value']))) ? ' selected="selected"' : ''), '>', $option[1], '</option>';
+								echo '
+									</select>';
+							}
+
+						echo '
+						</dd></dl>';
+					}
+	
+					echo '
+					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
+					<input type="submit" name="submit" value="', $txt['rp_submit'], '" tabindex="', $context['tabindex']++, '" class="button_submit" />';
+		
+					echo '
+					</div>
+				<span class="botslice"><span></span></span>
+			</div>
+	
+		</form>
+	</div>
+	<br class="clear">';
+}
+
+function template_rp_admin_post_setting_panel() {
 	global $context, $txt, $scripturl;
 
 	template_rp_admin_info();
@@ -117,51 +173,6 @@ function template_rp_admin_post_setting_panel()
 					<input type="submit" name="submit" value="', $txt['rp_submit'], '" tabindex="', $context['tabindex']++, '" class="button_submit" />';
 	
 				echo '
-				<span class="botslice"><span></span></span>
-			</div>
-	
-		</form>
-	</div>
-	<br class="clear">';
-}
-
-
-function template_rp_admin_general_setting_panel()
-{
-	global $context, $txt, $scripturl;
-
-	template_rp_admin_info();
-
-	echo '
-	<div id="admincenter">
-		<form action="'. $scripturl .'?action=admin;area=restrictposts;sa=savegeneralsettings" method="post" accept-charset="UTF-8">
-			<div class="windowbg2">
-				<span class="topslice"><span></span></span>
-					<div class="content">';
-	
-					foreach ($context['config_vars'] as $config_var) {
-						echo '
-						<dl class="settings">
-							<dt>
-								<span>'. $txt[$config_var['name']] .'</span>';
-								if (isset($config_var['subtext']) && !empty($config_var['subtext'])) {
-									echo '
-									<br /><span class="smalltext">', $config_var['subtext'] ,'</span>';
-								}
-							echo '
-							</dt>
-							<dd>
-								<input type="checkbox" name="', $config_var['name'], '" id="', $config_var['name'], '"', ($config_var['value'] ? ' checked="checked"' : ''), ' value="1" class="input_check" />
-							</dd>
-						</dl>';
-					}
-	
-					echo '
-					<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
-					<input type="submit" name="submit" value="', $txt['rp_submit'], '" tabindex="', $context['tabindex']++, '" class="button_submit" />';
-		
-					echo '
-					</div>
 				<span class="botslice"><span></span></span>
 			</div>
 	

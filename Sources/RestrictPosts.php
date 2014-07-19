@@ -33,9 +33,8 @@
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
-function RestrictPostsAdmin(&$admin_areas)
-{
-	global $txt, $modSettings, $context;
+function RestrictPostsAdmin(&$admin_areas) {
+	global $txt;
 
 	loadLanguage('RestrictPosts');
 	loadtemplate('RestrictPosts');
@@ -49,11 +48,9 @@ function RestrictPostsAdmin(&$admin_areas)
 	);
 }
 
-function ModifyRestrictPostsSettings($return_config = false)
-{
-	global $txt, $scripturl, $context, $sourcedir;
+function ModifyRestrictPostsSettings($return_config = false) {
+	global $txt, $context, $sourcedir;
 
-	/* I can has Adminz? */
 	isAllowedTo('admin_forum');
 
 	require_once($sourcedir . '/Subs-RestrictPosts.php');
@@ -61,29 +58,29 @@ function ModifyRestrictPostsSettings($return_config = false)
 	loadtemplate('RestrictPosts');
 
 	$context['page_title'] = $txt['rp_admin_panel'];
-	$default_action_func = 'basicRestrictPostsSettings';
+	$default_action_func = 'generalRestrictPostsSettings';
 
 	// Load up the guns
 	$context[$context['admin_menu_name']]['tab_data'] = array(
 		'title' => $txt['rp_admin_panel'],
 		'tabs' => array(
-			'postsettings' => array(
-				'label' => $txt['rp_post_settings'],
-				'url' => 'postsettings',
-			),
 			'generalsettings' => array(
 				'label' => $txt['rp_general_settings'],
 				'url' => 'generalsettings',
 			),
+			'postsettings' => array(
+				'label' => $txt['rp_post_settings'],
+				'url' => 'postsettings',
+			),
 		),
 	);
-	$context[$context['admin_menu_name']]['tab_data']['active_button'] = isset($_REQUEST['sa']) ? $_REQUEST['sa'] : 'postsettings';
+	$context[$context['admin_menu_name']]['tab_data']['active_button'] = isset($_REQUEST['sa']) ? $_REQUEST['sa'] : 'generalsettings';
 
 	$subActions = array(
-		'postsettings' => 'basicRestrictPostsSettings',
-		'savepostsettings' => 'saveRestrictPostsSettings',
 		'generalsettings' => 'generalRestrictPostsSettings',
 		'savegeneralsettings' => 'saveRestrictGeneralSettings',
+		'postsettings' => 'basicRestrictPostsSettings',
+		'savepostsettings' => 'saveRestrictPostsSettings',
 	);
 
 	//wakey wakey, call the func you lazy
@@ -102,14 +99,50 @@ function ModifyRestrictPostsSettings($return_config = false)
 	$default_action_func();
 }
 
-/*
- *default/basic function
- */
-function basicRestrictPostsSettings($return_config = false)
-{
-	global $txt, $scripturl, $context, $sourcedir, $user_info;
+function generalRestrictPostsSettings() {
+	global $context, $txt, $sourcedir;
 
-	/* I can has Adminz? */
+	require_once($sourcedir . '/ManageServer.php');
+	$general_settings = array(
+		array('check', 'rp_mod_enable', 'subtext' => $txt['rp_enable_disable_mod']),
+		array('check', 'rp_mod_enable_calendar', 'subtext' => $txt['rp_enable_disable_calendar']),
+		array('select', 'rp_restrict_method', array(
+			'topics' => $txt['rp_restrict_by_topics'],
+			'replies' => $txt['rp_restrict_by_replies'],
+		)),
+	);
+
+	$context['page_title'] = $txt['rp_admin_panel'];
+	$context['sub_template'] = 'rp_admin_general_setting_panel';
+	$context['restrict_posts']['tab_name'] = $txt['rp_general_settings'];
+	$context['restrict_posts']['tab_desc'] = $txt['rp_general_settings_desc'];
+	prepareDBSettingContext($general_settings);
+}
+
+function saveRestrictGeneralSettings() {
+	global $sourcedir, $txt;
+
+	if (isset($_POST['submit'])) {
+		checkSession();
+
+		$general_settings = array(
+			array('check', 'rp_mod_enable'),
+			array('check', 'rp_mod_enable_calendar'),
+			array('select', 'rp_restrict_method', array(
+				'topics' => $txt['rp_restrict_by_topics'],
+				'replies' => $txt['rp_restrict_by_replies'],
+			)),
+		);
+
+		require_once($sourcedir . '/ManageServer.php');
+		saveDBSettings($general_settings);
+		redirectexit('action=admin;area=restrictposts;sa=generalsettings');
+	}
+}
+
+function basicRestrictPostsSettings($return_config = false) {
+	global $txt, $context, $sourcedir;
+
 	isAllowedTo('admin_forum');
 
 	loadLanguage('RestrictPosts');
@@ -159,7 +192,6 @@ function basicRestrictPostsSettings($return_config = false)
 function saveRestrictPostsSettings() {
 	global $context;
 
-	/* I can has Adminz? */
 	isAllowedTo('admin_forum');
 
 	//Now we have posts data in a much proper manner
@@ -214,9 +246,7 @@ function saveRestrictPostsSettings() {
 	}
 }
 
-function sanitizeRestrictDBData ($data = array()) {
-	global $context;
-	
+function sanitizeRestrictDBData ($data = array()) {	
 	if (!is_array($data)) {
 		$data = array($data);
 	}
@@ -227,40 +257,6 @@ function sanitizeRestrictDBData ($data = array()) {
 		}
 	}
 	return $data;
-}
-
-function generalRestrictPostsSettings() {
-	global $context, $txt, $modSettings, $sourcedir;
-
-	require_once($sourcedir . '/ManageServer.php');
-	$general_settings = array(
-		array('check', 'rp_mod_enable', 'subtext' => $txt['rp_enable_disable_mod']),
-		array('check', 'rp_mod_enable_calendar', 'subtext' => $txt['rp_enable_disable_calendar']),
-	);
-
-	$context['page_title'] = $txt['rp_admin_panel'];
-	$context['sub_template'] = 'rp_admin_general_setting_panel';
-	$context['restrict_posts']['tab_name'] = $txt['rp_general_settings'];
-	$context['restrict_posts']['tab_desc'] = $txt['rp_general_settings_desc'];
-	prepareDBSettingContext($general_settings);
-}
-
-function saveRestrictGeneralSettings() {
-	global $context, $sourcedir;
-
-	if (isset($_POST['submit']))
-	{
-		checkSession();
-
-		$general_settings = array(
-			array('check', 'rp_mod_enable'),
-			array('check', 'rp_mod_enable_calendar'),
-		);
-
-		require_once($sourcedir . '/ManageServer.php');
-		saveDBSettings($general_settings);
-		redirectexit('action=admin;area=restrictposts;sa=generalsettings');
-	}
 }
 
 function isAllowedToPost() {
@@ -280,7 +276,7 @@ function isAllowedToPost() {
 }
 
 function isAllowedToPostEvents() {
-	global $context, $user_info, $sourcedir;
+	global $user_info, $sourcedir;
 
 	require_once($sourcedir . '/Subs-RestrictPosts.php');
 
