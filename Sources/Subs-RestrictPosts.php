@@ -139,8 +139,13 @@ function RP_clear_restrict_data() {
 	);
 }
 
-function RP_DB_isAllowedToPost() {
+function RP_DB_getRestrictParams() {
 	global $smcFunc, $context, $user_info;
+
+	$restrictParams = array(
+		'max_posts_allowed' => 0,
+		'timespan' => 0
+	);
 
 	$request = $smcFunc['db_query']('', '
 		SELECT MIN(max_posts_allowed) as max_posts_allowed, MIN(timespan) as timespan
@@ -154,28 +159,38 @@ function RP_DB_isAllowedToPost() {
 	);
 
 	if ($smcFunc['db_num_rows']($request) == 0) {
-		return true;
+		return $restrictParams;
 	}
 
 	//another cool method strtotime("-5 day");
 	//time() - 86400 * $row['timespan'];
-	list ($max_posts_allowed, $timespan) = $smcFunc['db_fetch_row']($request);
+	list ($restrictParams['max_posts_allowed'], $restrictParams['timespan']) = $smcFunc['db_fetch_row']($request);
 	$smcFunc['db_free_result']($request);
 
-	$timespan = time() - 86400 * $timespan;
+	return $restrictParams;
+}
+
+function RP_DB_isAllowedToPostTopics() {
+	global $smcFunc, $context, $user_info;
+
+	$restrictParams = RP_DB_getRestrictParams();
+
+	if(empty($restrictParams['max_posts_allowed'])) {
+		return true;
+	}
+
+	$timespan = time() - 86400 * $restrictParams['timespan'];
 
 	$request = $smcFunc['db_query']('', '
-		SELECT COUNT(m.id_msg)
-		FROM {db_prefix}messages as m
-		INNER JOIN {db_prefix}members as mem on (mem.id_member = m.id_member)
-		WHERE m.poster_time > {int:poster_time}
-		AND mem.id_member = {int:id_member}
-		AND mem.id_group IN ({array_int:id_group})
-		AND m.id_board = {int:id_board}',
+		SELECT COUNT(t.id_topic)
+		FROM {db_prefix}topics as t
+		INNER JOIN {db_prefix}messages as m on (m.id_msg = t.id_first_msg)
+		WHERE t.id_member_started = {int:id_member}
+		AND t.id_board = {int:id_board}
+		AND m.poster_time > {int:poster_time}',
 		array(
 			'id_member' => $user_info['id'],
 			'poster_time' => $timespan,
-			'id_group' => $user_info['groups'],
 			'id_board' => $context['current_board'],
 		)
 	);
@@ -183,7 +198,43 @@ function RP_DB_isAllowedToPost() {
 	$smcFunc['db_free_result']($request);
 
 	//echo 'before count';
-	if (!empty($count) && $count >= $max_posts_allowed) {
+	if (!empty($count) && $count >= $restrictParams['max_posts_allowed']) {
+		return false;
+	} else {
+		return true;
+	}
+}
+
+function RP_DB_isAllowedToPostReplies() {
+	global $smcFunc, $context, $user_info;
+
+	$restrictParams = RP_DB_getRestrictParams();
+
+	if(empty($restrictParams['max_posts_allowed'])) {
+		return true;
+	}
+
+	$timespan = time() - 86400 * $restrictParams['timespan'];
+
+	$request = $smcFunc['db_query']('', '
+		SELECT COUNT(m.id_msg)
+		FROM {db_prefix}messages as m
+		LEFT JOIN {db_prefix}topics as t on (t.id_topic = m.id_topic)
+		WHERE m.id_member = {int:id_member}
+		AND m.id_board = {int:id_board}
+		AND m.poster_time > {int:poster_time}
+		AND m.id_msg != t.id_first_msg',
+		array(
+			'id_member' => $user_info['id'],
+			'poster_time' => $timespan,
+			'id_board' => $context['current_board'],
+		)
+	);
+	list ($count) = $smcFunc['db_fetch_row']($request);
+	$smcFunc['db_free_result']($request);
+
+	//echo 'before count';
+	if (!empty($count) && $count >= $restrictParams['max_posts_allowed']) {
 		return false;
 	} else {
 		return true;

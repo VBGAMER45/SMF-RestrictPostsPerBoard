@@ -231,7 +231,7 @@ function saveRestrictPostsSettings() {
 	}
 
 	//Lets clear the junk values
-	$context['restrict_posts_db_data'] = sanitizeRestrictDBData($data);
+	$context['restrict_posts_db_data'] = RP_sanitizeRestrictDBData($data);
 
 	if (empty($context['restrict_posts_db_data'])) {
 		// They might want to clear some data
@@ -243,7 +243,7 @@ function saveRestrictPostsSettings() {
 	}
 }
 
-function sanitizeRestrictDBData ($data = array()) {	
+function RP_sanitizeRestrictDBData ($data = array()) {	
 	if (!is_array($data)) {
 		$data = array($data);
 	}
@@ -257,7 +257,7 @@ function sanitizeRestrictDBData ($data = array()) {
 }
 
 function RP_isAllowedToPost() {
-	global $context, $user_info, $sourcedir;
+	global $context, $user_info, $sourcedir, $modSettings;
 
 	require_once($sourcedir . '/Subs-RestrictPosts.php');
 	if (!isset($context['current_board'])) {
@@ -268,7 +268,11 @@ function RP_isAllowedToPost() {
 		return true;
 	}
 
-	$rp_is_allowed = RP_DB_isAllowedToPost();
+	if($modSettings['rp_restrict_method'] === 'topics') {
+		$rp_is_allowed = RP_DB_isAllowedToPostTopics();
+	} else {
+		$rp_is_allowed = RP_DB_isAllowedToPostReplies();
+	}
 	return $rp_is_allowed;
 }
 
