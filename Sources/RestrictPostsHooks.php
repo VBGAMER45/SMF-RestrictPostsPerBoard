@@ -57,8 +57,68 @@ function RP_includeAssets() {
 	loadlanguage('RestrictPosts');
 	$context['insert_after_template'] .= '
 	<script type="text/javascript"><!-- // --><![CDATA[
-		var rcLoaded = false,
-		inConflict = false;
+		var currentWinLocation = window.location.href,
+			re = /((restrictposts)?(postsettings))/;
+
+		// Load scripts only if we are on desired tabs
+		if(re.test(currentWinLocation)) {
+			var rcLoaded = false,
+				inConflict = false;
+
+			checkjQuery();
+		}
+
+		function checkjQuery() {
+			// Only do anything if jQuery isn"t defined
+			if (typeof(jQuery) == "undefined") {
+				console.log("jquery not found");
+				if (typeof($) == "function") {
+					console.log("jquery but in conflict");
+					inConflict = true;
+				}
+
+				loadJquery("http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js", function() {
+					if (typeof(jQuery) !=="undefined") {
+						console.log("directly loaded with version: " + jQuery.fn.jquery);
+						lp_jquery2_0_3 = jQuery.noConflict(true);
+						loadModScript();
+					}
+				});
+			} else {
+				// jQuery is already loaded
+				console.log("jquery is already loaded with version: " + jQuery.fn.jquery);
+				compareJQueryVersion(jQuery.fn.jquery, "2.0.3", function(result) {
+					console.log("result of version check: " + result)
+					switch(result) {
+						case false:
+						case 1:
+							lp_jquery2_0_3 = jQuery.noConflict(true);
+							loadModScript();
+							break;
+
+						case 2:
+							loadJquery("http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js", function() {
+								if (typeof(jQuery) !=="undefined") {
+									console.log("after version check loaded with version: " + jQuery.fn.jquery);
+									lp_jquery2_0_3 = jQuery.noConflict(true);
+									loadModScript();
+								}
+							});
+							break;
+
+						default:
+							loadJquery("http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js", function() {
+								if (typeof(jQuery) !=="undefined") {
+									console.log("default version check loaded with version: " + jQuery.fn.jquery);
+									lp_jquery2_0_3 = jQuery.noConflict(true);
+									loadModScript();
+								}
+							});
+							break;
+					}
+				})
+			};
+		}
 
 		function compareJQueryVersion(v1, v2, callback) {
 			var v1parts = v1.split('.');
@@ -111,56 +171,6 @@ function RP_includeAssets() {
 			};
 			head.appendChild(script);
 		}
-
-		// Only do anything if jQuery isn"t defined
-		if (typeof(jQuery) == "undefined") {
-			console.log("jquery not found");
-			if (typeof($) == "function") {
-				console.log("jquery but in conflict");
-				inConflict = true;
-			}
-
-			loadJquery("http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js", function() {
-				if (typeof(jQuery) !=="undefined") {
-					console.log("directly loaded with version: " + jQuery.fn.jquery);
-					lp_jquery2_0_3 = jQuery.noConflict(true);
-					loadModScript();
-				}
-			});
-		} else {
-			// jQuery is already loaded
-			console.log("jquery is already loaded with version: " + jQuery.fn.jquery);
-			compareJQueryVersion(jQuery.fn.jquery, "2.0.3", function(result) {
-				console.log("result of version check: " + result)
-				switch(result) {
-					case false:
-					case 1:
-						lp_jquery2_0_3 = jQuery.noConflict(true);
-						loadModScript();
-						break;
-
-					case 2:
-						loadJquery("http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js", function() {
-							if (typeof(jQuery) !=="undefined") {
-								console.log("after version check loaded with version: " + jQuery.fn.jquery);
-								lp_jquery2_0_3 = jQuery.noConflict(true);
-								loadModScript();
-							}
-						});
-						break;
-
-					default:
-						loadJquery("http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js", function() {
-							if (typeof(jQuery) !=="undefined") {
-								console.log("default version check loaded with version: " + jQuery.fn.jquery);
-								lp_jquery2_0_3 = jQuery.noConflict(true);
-								loadModScript();
-							}
-						});
-						break;
-				}
-			})
-		};
 
 		function loadModScript() {
 			var js = document.createElement("script");

@@ -132,7 +132,7 @@ function template_rp_admin_post_setting_panel() {
 	echo '
 	<div id="admincenter">
 		<form action="'. $scripturl .'?action=admin;area=restrictposts;sa=savepostsettings" method="post" accept-charset="UTF-8">
-			<div class="windowbg2">
+			<div class="windowbg2" id="restrictPostsBoardSettings">
 				<span class="topslice"><span></span></span>';
 	
 				foreach ($context['restrict_posts']['board_info'] as $board_info) {
@@ -162,8 +162,8 @@ function template_rp_admin_post_setting_panel() {
 					</fieldset>';
 				}
 	
-					echo '
-					<input type="submit" name="submit" value="', $txt['rp_submit'], '" tabindex="', $context['tabindex']++, '" class="button_submit" />';
+				echo '
+					<input type="submit" name="submit" value="', $txt['rp_submit'], '" tabindex="', $context['tabindex']++, '" class="button_submit" onclick="restrictPosts.prototype.saveBoardSettings(event, {sessId: \''. $context['session_id'] .'\', sessVar: \''. $context['session_var'] .'\'})" />';
 	
 				echo '
 				<span class="botslice"><span></span></span>
