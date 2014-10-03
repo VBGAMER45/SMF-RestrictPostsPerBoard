@@ -110,6 +110,29 @@
 					data: sessionData,
 				}).done(function(resp) {
 					console.log(resp);
+					if (Object.keys(inputData).length > 0) {
+						saveBoardsData();
+					}
+				}).fail(function(error) {
+					console.log(error);
+				}).always(function(resp) {
+					console.log(resp);
+				});
+			},
+
+			saveBoardsData = function() {
+				var dbData = {
+					'inputData': JSON.stringify(inputData)
+				};
+				dbData[userSessionVar] = userSessionId;
+
+				restrictPosts.jQRef.ajax({
+					type: "POST",
+					url: smf_scripturl + '?action=admin;area=restrictposts;sa=savepostsettings',
+					dataType: "json",
+					data: dbData,
+				}).done(function(resp) {
+					console.log(resp);
 				}).fail(function(error) {
 					console.log(error);
 				}).always(function(resp) {

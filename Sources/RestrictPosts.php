@@ -143,7 +143,6 @@ function basicRestrictPostsSettings($return_config = false) {
 	$context['restrict_posts']['board_info'] = RP_load_all_boards();
 	$context['restrict_posts']['status'] = RP_load_post_restrict_status();
 
-
 	foreach ($context['restrict_posts']['board_info'] as $board_key => $boards) {
 		foreach ($context['restrict_posts']['groups'] as $groups_key => $groups) {
 			if (in_array($groups['id_group'], $boards['member_groups'])) {
@@ -158,8 +157,8 @@ function basicRestrictPostsSettings($return_config = false) {
 
 		foreach ($context['restrict_posts']['status'] as $status_key => $status) {
 			if ($status['id_board'] === $boards['id_board'] && isset($context['restrict_posts']['board_info'][$board_key]['groups_data']) && isset($context['restrict_posts']['board_info'][$board_key]['groups_data'][$boards['id_board'] . '_' . $status['id_group']])) {
-					$context['restrict_posts']['board_info'][$board_key]['groups_data'][$boards['id_board'] . '_' .$status['id_group']]['max_posts_allowed'] = $status['max_posts_allowed'];
-					$context['restrict_posts']['board_info'][$board_key]['groups_data'][$boards['id_board'] . '_' .$status['id_group']]['timespan'] = $status['timespan'];
+				$context['restrict_posts']['board_info'][$board_key]['groups_data'][$boards['id_board'] . '_' .$status['id_group']]['max_posts_allowed'] = $status['max_posts_allowed'];
+				$context['restrict_posts']['board_info'][$board_key]['groups_data'][$boards['id_board'] . '_' .$status['id_group']]['timespan'] = $status['timespan'];
 			}
 		}
 		unset($context['restrict_posts']['board_info'][$board_key]['member_groups']);
@@ -175,10 +174,43 @@ function saveRestrictPostsSettings() {
 	global $context;
 
 	isAllowedTo('admin_forum');
+	if (checkSession('request', '', false) != '') {
+		echo json_encode(array('result' => false, 'data' => 'invalid session'));
+		die();
+	}
+	$rpBoardSettingsData = json_decode($_REQUEST['inputData'], true);
+
+	// We are going to validate data once again
+	if(RP_validateDBData() === true) {
+		$result = RP_add_restrict_data($rpBoardSettingsData);
+
+		if(!empty($result)) {
+			echo json_encode(array('result' => true, 'msg' => 'database updated'));
+		} else {
+			echo json_encode(array('result' => false, 'msg' => 'error updating DB'));
+		}
+		die();
+	} else {
+		echo json_encode(array('result' => false, 'msg' => 'error data is not valid'));
+	}
+}
+
+function RP_validateDBData ($data = array()) {
+	if (!is_array($data)) {
+		return false;
+	}
+
+	foreach ($data as $key => $value) {
+		//if i found something fishy, you are going back
+		if (!is_numeric($data['id_board']) || !is_numeric($data['id_group']) || !is_numeric($data['max_posts_allowed']) || !is_numeric($data['timespan'])) {
+			return false;
+		}
+	}
+	return true;
 }
 
 function RP_clearRestrictData() {
-	global $smcFunc, $context;
+	global $smcFunc;
 
 	isAllowedTo('admin_forum');
 	if (checkSession('request', '', false) != '') {

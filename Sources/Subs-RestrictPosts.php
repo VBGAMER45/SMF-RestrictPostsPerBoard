@@ -110,11 +110,8 @@ function RP_add_restrict_data($data = array()) {
 
 	//not possible, if it still happens, go back
 	if (!is_array($data)) {
-		return;
+		return false;
 	}
-
-	//Just empty the data and add new data
-	// RP_clear_restrict_data();
 
 	foreach ($data as $val) {
 		$smcFunc['db_insert']('',
@@ -128,6 +125,7 @@ function RP_add_restrict_data($data = array()) {
 			array()
 		);
 	}
+	return true;
 }
 
 function RP_DB_getRestrictParams() {
