@@ -35,7 +35,7 @@
 		var parentElemRef = null,
 			userSessionId = null,
 			userSessionVar = null,
-			tempData = {},
+			inputData = {},
 
 			init = function() {
 				inputRef = restrictPosts.jQRef('#restrictPostsBoardSettings input');
@@ -54,19 +54,48 @@
 
 					inputName = inputName.split('_');
 
+					// inout name is array as follow
+					// board id, fieldName, group ID
 					if (inputName.length === 3) {
 						if (!isNaN(inputName[0]) && !isNaN(inputName[2])) {
-							// console.log(inputName + inputVal);
-							console.log(inputVal);
+							var keyIdentifier = inputName[0] + '_' + inputName[2];
+
+							if (inputName[1] === 'posts') {
+								if (inputData.hasOwnProperty(keyIdentifier)) {
+									inputData[keyIdentifier]['max_posts_allowed'] = inputVal;
+								} else {
+									inputData[keyIdentifier] = {
+										'id_board': inputName[0],
+										'id_group': inputName[2],
+										'max_posts_allowed': inputVal
+									};
+								}
+							} else if (inputName[1] === 'timespan') {
+								if (inputData.hasOwnProperty(keyIdentifier)) {
+									inputData[keyIdentifier]['timespan'] = inputVal;
+								} else {
+									inputData[keyIdentifier] = {
+										'id_board': inputName[0],
+										'id_group': inputName[2],
+										'timespan': inputVal
+									};
+								}
+							}
 						}
 					}
+				}).promise().done(function() {
+					sanitizeRestrictDBData();
 				});
+			},
+
+			sanitizeRestrictDBData = function() {
+				console.log(inputData);
 			},
 
 			resetVars = function() {
 				userSessionId = null;
 				userSessionVar = null;
-				tempData = {};
+				inputData = {};
 			},
 
 			isNullUndefined = function(val) {
