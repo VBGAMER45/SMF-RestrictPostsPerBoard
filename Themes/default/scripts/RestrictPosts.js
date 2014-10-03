@@ -54,6 +54,7 @@
 						inputVal = restrictPosts.jQRef(this).val();
 
 					inputName = inputName.split('_');
+					inputVal = parseInt(inputVal, 10);
 
 					// inout name is array as follow
 					// board id, fieldName, group ID
