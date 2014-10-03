@@ -51,7 +51,7 @@ function RestrictPostsAdmin(&$admin_areas) {
 /*
  * A generic function to load JS and css related to mod
 */
-function RC_includeAssets() {
+function RP_includeAssets() {
 	global $settings, $context;
 
 	loadlanguage('RestrictPosts');

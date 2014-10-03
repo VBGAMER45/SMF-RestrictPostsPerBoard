@@ -9,19 +9,23 @@
 	<install for="2.0 - 2.0.99">
 		<readme type="file" parsebbc="true">readme.txt</readme>
 		<database>install.php</database>
+		<require-file name="Sources/RestrictPostsHooks.php" destination="$sourcedir">File to add all hooks</require-file>
 		<require-file name="Sources/RestrictPosts.php" destination="$sourcedir">Controller of modification</require-file>
 		<require-file name="Sources/Subs-RestrictPosts.php" destination="$sourcedir">Database handler</require-file>
 		<require-file name="Themes/default/RestrictPosts.template.php" destination="$themedir">View of mod</require-file>
 		<require-file name="Themes/default/languages/RestrictPosts.english.php" destination="$languagedir">All language Strings</require-file>
+		<require-file name="Themes/default/scripts/RestrictPosts.js" destination="$themedir/scripts">JS file of mod</require-file>
 		<modification>Modification.xml</modification>
 	</install>
 
 	<uninstall for="2.0 - 2.0.99">
 		<code>uninstall.php</code>
+		<remove-file name="$sourcedir/RestrictPostsHooks.php" />
 		<remove-file name="$sourcedir/RestrictPosts.php" />
 		<remove-file name="$sourcedir/Subs-RestrictPosts.php" />
 		<remove-file name="$themedir/RestrictPosts.template.php" />
 		<remove-file name="$languagedir/RestrictPosts.english.php" />
+		<remove-file name="$themedir/scripts/RestrictPosts.js" />
 		<modification reverse="true">Modification.xml</modification>
 		<redirect url="$scripturl?action=admin;area=packages;sa=browse" timeout="1000" />
 	</uninstall>
