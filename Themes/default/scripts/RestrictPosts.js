@@ -93,7 +93,7 @@
 			sanitizeRestrictDBData = function() {
 				for (var i in inputData) {
 					if (inputData.hasOwnProperty(i)) {
-						if (isNullUndefined(inputData[i]['max_posts_allowed']) || isNullUndefined(inputData[i]['timespan'])) {
+						if (isNullUndefined(inputData[i]['max_posts_allowed'], true) || isNullUndefined(inputData[i]['timespan'], true)) {
 							delete(inputData[i]);
 						}
 					}
@@ -166,7 +166,7 @@
 				return ({}).toString.call(obj).toLowerCase();
 			},
 
-			isNullUndefined = function(val) {
+			isNullUndefined = function(val, validateZeroNaN) {
 				var isNull = false,
 					type = getType(val);
 
@@ -185,6 +185,8 @@
 
 					default:
 						if (typeof(val) === "undefined" || val === null || val === "" || val === "null" || val === "undefined") {
+							isNull = true;
+						} else if(validateZeroNaN && (val === 0 || isNaN(val))) {
 							isNull = true;
 						}
 				}
