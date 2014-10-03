@@ -33,21 +33,6 @@
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
-function RestrictPostsAdmin(&$admin_areas) {
-	global $txt;
-
-	loadLanguage('RestrictPosts');
-	loadtemplate('RestrictPosts');
-
-	$admin_areas['config']['areas']['restrictposts'] = array(
-		'label' => $txt['rp_menu'],
-		'file' => 'RestrictPosts.php',
-		'function' => 'ModifyRestrictPostsSettings',
-		'icon' => 'administration.gif',
-		'subsections' => array(),
-	);
-}
-
 function ModifyRestrictPostsSettings($return_config = false) {
 	global $txt, $context, $sourcedir;
 
