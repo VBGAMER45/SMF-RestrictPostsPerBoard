@@ -111,7 +111,12 @@
 					data: sessionData,
 				}).done(function(resp) {
 					console.log(resp);
-					if (Object.keys(inputData).length > 0) {
+
+					if (!isNullUndefined(resp) && !resp.result && !isNullUndefined(resp.msg)) {
+						if (!alert(resp.msg)) {
+							window.location.reload();
+						}
+					} else if (Object.keys(inputData).length > 0) {
 						saveBoardsData();
 					}
 				}).fail(function(error) {
@@ -135,6 +140,13 @@
 					data: dbData,
 				}).done(function(resp) {
 					console.log(resp);
+					if (!isNullUndefined(resp) && !resp.result && !isNullUndefined(resp.msg)) {
+						if (!alert(resp.msg)) {
+							window.location.reload();
+						}
+					} else {
+						window.location.reload();
+					}
 				}).fail(function(error) {
 					console.log(error);
 				}).always(function(resp) {

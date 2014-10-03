@@ -171,11 +171,11 @@ function basicRestrictPostsSettings($return_config = false) {
 }
 
 function saveRestrictPostsSettings() {
-	global $context;
+	global $txt, $context;
 
 	isAllowedTo('admin_forum');
 	if (checkSession('request', '', false) != '') {
-		echo json_encode(array('result' => false, 'data' => 'invalid session'));
+		echo json_encode(array('result' => false, 'data' => $txt['rp_invalid_session']));
 		die();
 	}
 	$rpBoardSettingsData = json_decode($_REQUEST['inputData'], true);
@@ -185,13 +185,13 @@ function saveRestrictPostsSettings() {
 		$result = RP_add_restrict_data($rpBoardSettingsData);
 
 		if(!empty($result)) {
-			echo json_encode(array('result' => true, 'msg' => 'database updated'));
+			echo json_encode(array('result' => true, 'msg' => $txt['rp_database_updated']));
 		} else {
-			echo json_encode(array('result' => false, 'msg' => 'error updating DB'));
+			echo json_encode(array('result' => false, 'msg' => $txt['rp_err_updating_db']));
 		}
 		die();
 	} else {
-		echo json_encode(array('result' => false, 'msg' => 'error data is not valid'));
+		echo json_encode(array('result' => false, 'msg' => $txt['rp_err_unvalid_data']));
 	}
 }
 
@@ -210,11 +210,11 @@ function RP_validateDBData ($data = array()) {
 }
 
 function RP_clearRestrictData() {
-	global $smcFunc;
+	global $txt, $smcFunc;
 
 	isAllowedTo('admin_forum');
 	if (checkSession('request', '', false) != '') {
-		echo json_encode(array('result' => false, 'data' => 'invalid session'));
+		echo json_encode(array('result' => false, 'data' => $txt['rp_invalid_session']));
 		die();
 	}
 
@@ -226,7 +226,7 @@ function RP_clearRestrictData() {
 	if(isset($request) && !empty($request)) {
 		echo json_encode(array('result' => true, 'msg' => 'database cleared'));
 	} else {
-		echo json_encode(array('result' => false, 'msg' => 'error cleaning DB'));
+		echo json_encode(array('result' => false, 'msg' => $txt['rp_err_cleaning_rp_data']));
 	}
 	die();
 }

@@ -58,4 +58,11 @@ $txt['rp_restrict_by_replies'] = 'replies';
 
 $txt['rp_submit'] = 'Submit';
 
+// text strings for admin section
+$txt['rp_invalid_session'] = 'Opps! It seems your session is invalid, please try again';
+$txt['rp_err_cleaning_rp_data'] = 'Opps! There seems to be an error in cleaning the database';
+$txt['rp_err_updating_db'] = 'Opps! There seems to be an error in updating the database';
+$txt['rp_err_unvalid_data'] = 'Opps! The data seems to be invalid';
+$txt['rp_database_updated'] = 'Data saved successfully';
+
 ?>
