@@ -114,7 +114,7 @@ function RP_add_restrict_data($data = array()) {
 	}
 
 	//Just empty the data and add new data
-	RP_clear_restrict_data();
+	// RP_clear_restrict_data();
 
 	foreach ($data as $val) {
 		$smcFunc['db_insert']('',
@@ -128,15 +128,6 @@ function RP_add_restrict_data($data = array()) {
 			array()
 		);
 	}
-}
-
-function RP_clear_restrict_data() {
-	global $smcFunc;
-
-	$smcFunc['db_query']('', '
-		DELETE FROM {db_prefix}restrict_posts',
-		array()
-	);
 }
 
 function RP_DB_getRestrictParams() {

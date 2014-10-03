@@ -89,13 +89,42 @@
 			},
 
 			sanitizeRestrictDBData = function() {
-				console.log(inputData);
+				for (var i in inputData) {
+					if (inputData.hasOwnProperty(i)) {
+						if (isNullUndefined(inputData[i]['max_posts_allowed']) || isNullUndefined(inputData[i]['timespan'])) {
+							delete(inputData[i]);
+						}
+					}
+				}
+				clearRPBoardsData();
+			},
+
+			clearRPBoardsData = function() {
+				var sessionData = {};
+				sessionData[userSessionVar] = userSessionId;
+
+				restrictPosts.jQRef.ajax({
+					type: "POST",
+					url: smf_scripturl + '?action=admin;area=restrictposts;sa=clearrestrictdata',
+					dataType: "json",
+					data: sessionData,
+				}).done(function(resp) {
+					console.log(resp);
+				}).fail(function(error) {
+					console.log(error);
+				}).always(function(resp) {
+					console.log(resp);
+				});
 			},
 
 			resetVars = function() {
 				userSessionId = null;
 				userSessionVar = null;
 				inputData = {};
+			},
+
+			getType = function(obj) {
+				return ({}).toString.call(obj).toLowerCase();
 			},
 
 			isNullUndefined = function(val) {

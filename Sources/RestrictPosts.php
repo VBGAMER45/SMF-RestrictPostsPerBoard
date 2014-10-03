@@ -66,6 +66,7 @@ function ModifyRestrictPostsSettings($return_config = false) {
 		'savegeneralsettings' => 'saveRestrictGeneralSettings',
 		'postsettings' => 'basicRestrictPostsSettings',
 		'savepostsettings' => 'saveRestrictPostsSettings',
+		'clearrestrictdata' => 'RP_clearRestrictData'
 	);
 
 	//wakey wakey, call the func you lazy
@@ -128,7 +129,6 @@ function basicRestrictPostsSettings($return_config = false) {
 	isAllowedTo('admin_forum');
 
 	loadLanguage('RestrictPosts');
-	loadtemplate('RestrictPosts');
 	
 	require_once($sourcedir . '/Subs-Membergroups.php');
 	$context['restrict_posts']['groups'][-1] = array(
@@ -175,56 +175,28 @@ function saveRestrictPostsSettings() {
 	global $context;
 
 	isAllowedTo('admin_forum');
+}
 
-	$data = array();
-	unset($_POST['submit']);
-	foreach ($_POST as $key => $value) {
-		
-		//just boom the data, let them get happy
-		$temp_data = explode('_', $key);
+function RP_clearRestrictData() {
+	global $smcFunc, $context;
 
-		//if i found something fishy, you are going back
-		if (!is_numeric($temp_data[0]) || !is_numeric($temp_data[2])) {
-			return false;
-		}
-
-		$id_board = (int) $temp_data[0];
-		$id_group = (int) $temp_data[2];
-
-		if ($temp_data[1] === 'posts') {
-			if (isset($data[$id_board . '_' . $id_group])) {
-				$data[$id_board . '_' . $id_group]['max_posts_allowed'] = (int) $value;
-			} else {
-				$data[$id_board . '_' . $id_group] = array(
-					'id_board' => $id_board,
-					'id_group' => $id_group,
-					'max_posts_allowed' => (int) $value,
-				);
-			}
-		} else if ($temp_data[1] === 'timespan') {
-			if (isset($data[$id_board . '_' . $id_group])) {
-				$data[$id_board . '_' . $id_group]['timespan'] = (int) $value;
-			} else {
-				$data[$id_board . '_' . $id_group] = array(
-					'id_board' => $id_board,
-					'id_group' => $id_group,
-					'timespan' => (int) $value,
-				);
-			}
-		}
+	isAllowedTo('admin_forum');
+	if (checkSession('request', '', false) != '') {
+		echo json_encode(array('result' => false, 'data' => 'invalid session'));
+		die();
 	}
 
-	//Lets clear the junk values
-	$context['restrict_posts_db_data'] = RP_sanitizeRestrictDBData($data);
+	$request = $smcFunc['db_query']('', '
+		DELETE FROM {db_prefix}restrict_posts',
+		array()
+	);
 
-	if (empty($context['restrict_posts_db_data'])) {
-		// They might want to clear some data
-		RP_clear_restrict_data();
-		redirectexit('action=admin;area=restrictposts;sa=postsettings');
+	if(isset($request) && !empty($request)) {
+		echo json_encode(array('result' => true, 'msg' => 'database cleared'));
 	} else {
-		RP_add_restrict_data($context['restrict_posts_db_data']);
-		redirectexit('action=admin;area=restrictposts;sa=postsettings');
+		echo json_encode(array('result' => false, 'msg' => 'error cleaning DB'));
 	}
+	die();
 }
 
 function RP_sanitizeRestrictDBData ($data = array()) {	
