@@ -44,6 +44,7 @@
 			saveBoardSettings = function(event, params) {
 				event.preventDefault();
 
+				restrictPosts.jQRef('#rp_overlay').show();
 				resetVars();
 				userSessionId = params.sessId;
 				userSessionVar = params.sessVar;
@@ -117,6 +118,7 @@
 					console.log(error);
 				}).always(function(resp) {
 					console.log(resp);
+					restrictPosts.jQRef('#rp_overlay').hide();
 				});
 			},
 
@@ -137,6 +139,7 @@
 					console.log(error);
 				}).always(function(resp) {
 					console.log(resp);
+					restrictPosts.jQRef('#rp_overlay').hide();
 				});
 			},
 

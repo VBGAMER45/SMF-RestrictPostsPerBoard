@@ -62,9 +62,7 @@ function RP_includeAssets() {
 
 		// Load scripts only if we are on desired tabs
 		if(re.test(currentWinLocation)) {
-			var rcLoaded = false,
-				inConflict = false;
-
+			var inConflict = false;
 			checkjQuery();
 		}
 

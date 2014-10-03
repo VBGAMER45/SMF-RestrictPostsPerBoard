@@ -125,7 +125,7 @@ function template_rp_admin_general_setting_panel() {
 }
 
 function template_rp_admin_post_setting_panel() {
-	global $context, $txt, $scripturl, $modSettings;
+	global $context, $txt, $scripturl, $modSettings, $settings;
 
 	template_rp_admin_info();
 
@@ -171,7 +171,38 @@ function template_rp_admin_post_setting_panel() {
 	
 		</form>
 	</div>
-	<br class="clear">';
+	<br class="clear">
+	<div id="rp_overlay"><div class="loader" style="background-image: url('. $settings['default_images_url'] .'/rp_preloader.gif)"></div></div>';
+
+	echo '<style type="text/css">
+		#rp_overlay {
+			display: none;
+			position: fixed;
+			width: 100%;
+			height: 100%;
+			top: 0;
+			left: 0;
+			bottom: 0;
+			right: 0;
+			margin: auto;
+			background: #000;
+			background: rgba(255, 255, 255, 0.5);
+		}
+
+		#rp_overlay .loader {
+			position: absolute;
+			top: 50%;
+			left: 50%;
+			margin-top: -64px;
+			margin-left: -64px;
+			width: 128px;
+			height: 128px;
+			z-index: 101;
+			background-repeat: no-repeat;
+			background-position: center center;
+			background-size: 100% auto;
+		}
+	</style>';
 }
 
 ?>

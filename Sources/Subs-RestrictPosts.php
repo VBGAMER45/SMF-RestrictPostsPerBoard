@@ -120,7 +120,7 @@ function RP_add_restrict_data($data = array()) {
 				'id_board' => 'int', 'id_group' => 'int', 'max_posts_allowed' => 'int', 'timespan' => 'int',
 			),
 			array(
-				$val['id_board'], $val['id_group'], $val['max_posts_allowed'], $val['timespan'],
+				(int) $val['id_board'], (int) $val['id_group'], (int) $val['max_posts_allowed'], (int) $val['timespan'],
 			),
 			array()
 		);
