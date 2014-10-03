@@ -38,7 +38,9 @@ if (file_exists(dirname(__FILE__) . '/SSI.php') && !defined('SMF'))
 elseif (!defined('SMF'))
 	die('<b>Error:</b> Cannot uninstall - please verify you put this in the same place as SMF\'s index.php.');
 
-remove_integration_function('integrate_pre_include', '$sourcedir/RestrictPosts.php');
-remove_integration_function('integrate_admin_areas', 'RestrictPostsAdmin');
+remove_integration_function('integrate_pre_include', '$sourcedir/RestrictPostsHooks.php', true);
+remove_integration_function('integrate_pre_include', '$sourcedir/RestrictPosts.php', true);
+remove_integration_function('integrate_load_theme', 'RP_includeAssets', true);
+remove_integration_function('integrate_admin_areas', 'RestrictPostsAdmin', true);
 
 ?>
