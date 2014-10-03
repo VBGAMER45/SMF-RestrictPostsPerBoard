@@ -180,58 +180,30 @@ function RP_includeAssets() {
 		}
 	// ]]></script>';
 
-	LP_checkJsonEncode();
+	RP_checkJsonEncodeDecode();
 }
 
-function LP_checkJsonEncode() {
-	if (!function_exists('json_encode')) {
-		function json_encode($a = false) {
+function RP_checkJsonEncodeDecode() {
+	global $sourcedir;
 
-			switch(gettype($a)) {
-				case 'integer':
-				case 'double':
-					return floatval(str_replace(",", ".", strval($a)));
-				break;
-
-				case 'NULL':
-				case 'resource':
-				case 'unknown':
-					return 'null';
-				break;
-
-				case 'boolean':
-					return $a ? 'true' : 'false' ;
-				break;
-
-				case 'array':
-				case 'object':
-					$output = array();
-					$isAssoc = false;
-
-					foreach(array_keys($a) as $key) {
-						if (!is_int($key)) {
-							$isAssoc = true;
-							break;
-						}
-					}
-
-					if($isAssoc) {
-						foreach($a as $k => $val) {
-							$output []= json_encode($k) . ':' . json_encode($val);
-						}
-						$output = '{' . implode(',', $output) . '}';
-					} else {
-						foreach($a as $val){
-							$output []= json_encode($val);
-						}
-						$output = '[' . implode(',', $output) . ']';
-					}
-					return $output;
-				break;
-
-				default:
-				return '"' . addslashes($a) . '"';
+	if (!function_exists('json_decode')) {
+		function json_decode($content, $assoc=false) {
+			require_once($sourcedir . '/JSON.php');
+			if ($assoc) {
+				$json = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
 			}
+			else {
+				$json = new Services_JSON;
+			}
+			return $json->decode($content);
+		}
+	}
+
+	if (!function_exists('json_encode')) {
+		function json_encode($content) {
+			require_once($sourcedir . '/JSON.php');
+			$json = new Services_JSON;
+			return $json->encode($content);
 		}
 	}
 }

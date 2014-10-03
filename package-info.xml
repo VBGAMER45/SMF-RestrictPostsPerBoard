@@ -9,6 +9,7 @@
 	<install for="2.0 - 2.0.99">
 		<readme type="file" parsebbc="true">readme.txt</readme>
 		<database>install.php</database>
+		<require-file name="Sources/JSON.php" destination="$sourcedir">File for json fallback</require-file>
 		<require-file name="Sources/RestrictPostsHooks.php" destination="$sourcedir">File to add all hooks</require-file>
 		<require-file name="Sources/RestrictPosts.php" destination="$sourcedir">Controller of modification</require-file>
 		<require-file name="Sources/Subs-RestrictPosts.php" destination="$sourcedir">Database handler</require-file>
@@ -20,6 +21,7 @@
 
 	<uninstall for="2.0 - 2.0.99">
 		<code>uninstall.php</code>
+		<remove-file name="$sourcedir/JSON.php" />
 		<remove-file name="$sourcedir/RestrictPostsHooks.php" />
 		<remove-file name="$sourcedir/RestrictPosts.php" />
 		<remove-file name="$sourcedir/Subs-RestrictPosts.php" />
