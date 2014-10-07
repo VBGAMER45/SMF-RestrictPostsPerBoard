@@ -202,7 +202,6 @@ function RP_checkJsonEncodeDecode() {
 		require_once($sourcedir . '/JSON.php');
 
 		function json_encode($content) {
-			require_once($sourcedir . '/JSON.php');
 			$json = new Services_JSON;
 			return $json->encode($content);
 		}
