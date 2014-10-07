@@ -185,8 +185,9 @@ function RP_checkJsonEncodeDecode() {
 	global $sourcedir;
 
 	if (!function_exists('json_decode')) {
+		require_once($sourcedir . '/JSON.php');
+
 		function json_decode($content, $assoc=false) {
-			require_once($sourcedir . '/JSON.php');
 			if ($assoc) {
 				$json = new Services_JSON(SERVICES_JSON_LOOSE_TYPE);
 			}
@@ -198,6 +199,8 @@ function RP_checkJsonEncodeDecode() {
 	}
 
 	if (!function_exists('json_encode')) {
+		require_once($sourcedir . '/JSON.php');
+
 		function json_encode($content) {
 			require_once($sourcedir . '/JSON.php');
 			$json = new Services_JSON;
